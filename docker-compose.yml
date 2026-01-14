@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./output:/app/output
+      - ./assets:/app/assets
+      - ./src:/app/src
+    environment:
+      - BLENDER_PATH=/opt/blender/blender
+    restart: unless-stopped

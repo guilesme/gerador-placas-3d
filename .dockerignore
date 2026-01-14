@@ -1,0 +1,10 @@
+.git
+.gitignore
+output/
+venv/
+__pycache__/
+.vscode/
+.idea/
+3mf_analysis_*/
+*.3mf
+*.zip
