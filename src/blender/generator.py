@@ -28,7 +28,7 @@ MARGIN_Y = 30.0
 MAX_TEXT_WIDTH = PLATE_WIDTH - (MARGIN_X * 2)
 MAX_TEXT_HEIGHT = PLATE_HEIGHT - (MARGIN_Y * 2) - 20  # Espaço para rodapé
 DEFAULT_FONT_SIZE = 20.0
-MIN_FONT_SIZE = 8.0
+MIN_FONT_SIZE = 5.0
 
 # Rodapé
 FOOTER_TEXT = "Condomínio Astro"
@@ -176,35 +176,65 @@ def create_solid_text(text, size, location, align='CENTER', name="Texto"):
     return text_obj
 
 
-def calculate_font_size(text, font):
-    """Calcula tamanho de fonte para caber na área"""
-    # Cria texto temporário
-    curve = bpy.data.curves.new("temp", type='FONT')
-    curve.body = text
+def wrap_text_to_fit(text, font, font_size, max_width):
+    """Quebra o texto em múltiplas linhas garantindo que cabe na largura"""
+    curve = bpy.data.curves.new("temp_wrap", type='FONT')
     if font:
         curve.font = font
-    
-    temp = bpy.data.objects.new("temp", curve)
+    curve.size = font_size
+    temp = bpy.data.objects.new("temp_wrap", curve)
     bpy.context.collection.objects.link(temp)
     
-    size = DEFAULT_FONT_SIZE
-    while size > MIN_FONT_SIZE:
-        curve.size = size
-        bpy.context.view_layer.update()
+    wrapped_lines = []
+    for p in text.split('\n'):
+        if not p.strip():
+            wrapped_lines.append("")
+            continue
+        words = p.split(' ')
+        current_line = words[0]
         
-        dims = temp.dimensions
-        if dims.x <= MAX_TEXT_WIDTH and dims.y <= MAX_TEXT_HEIGHT:
-            break
-        size -= 1.0
-    
+        for word in words[1:]:
+            test_line = current_line + " " + word
+            curve.body = test_line
+            bpy.context.view_layer.update()
+            
+            if temp.dimensions.x > max_width:
+                wrapped_lines.append(current_line)
+                current_line = word
+            else:
+                current_line = test_line
+        wrapped_lines.append(current_line)
+        
     bpy.data.objects.remove(temp)
     bpy.data.curves.remove(curve)
+    return '\n'.join(wrapped_lines)
+
+def calculate_font_size(text, font):
+    """Calcula tamanho de fonte para caber na área, aplicando quebra de texto"""
+    size = DEFAULT_FONT_SIZE
+    best_text = text
+    
+    while size > MIN_FONT_SIZE:
+        wrapped_text = wrap_text_to_fit(text, font, size, MAX_TEXT_WIDTH)
+        lines = wrapped_text.split('\n')
+        total_height = len(lines) * size * 1.3
+        
+        # Testa se a altura total não excede o máximo permitido
+        if total_height <= MAX_TEXT_HEIGHT:
+            best_text = wrapped_text
+            break
+            
+        size -= 1.0
+        
+    if size <= MIN_FONT_SIZE:
+        size = MIN_FONT_SIZE
+        best_text = wrap_text_to_fit(text, font, size, MAX_TEXT_WIDTH)
     
     log(f"Tamanho calculado: {size}mm")
-    return size
+    return size, best_text
 
 
-def generate_plate(text, output_path, custom_font_size=None):
+def generate_plate(text, output_path, custom_font_size=None, align='CENTER'):
     """Função principal de geração"""
     log("=" * 50)
     log("INICIANDO GERAÇÃO DE PLACA")
@@ -218,13 +248,14 @@ def generate_plate(text, output_path, custom_font_size=None):
     # 1. Criar placa base
     plate = create_plate()
     
-    # 2. Determinar tamanho de fonte
+    # 2. Determinar tamanho de fonte e quebrar o texto
+    font = get_font()
     if custom_font_size and custom_font_size >= MIN_FONT_SIZE:
         font_size = custom_font_size
         log(f"Usando fonte customizada: {font_size}mm")
+        text = wrap_text_to_fit(text, font, font_size, MAX_TEXT_WIDTH)
     else:
-        font = get_font()
-        font_size = calculate_font_size(text, font)
+        font_size, text = calculate_font_size(text, font)
     
     # 3. Criar texto principal (centralizado)
     lines = [l.strip() for l in text.split('\n') if l.strip()]
@@ -235,7 +266,16 @@ def generate_plate(text, output_path, custom_font_size=None):
     
     for i, line in enumerate(lines):
         y = start_y - (i * font_size * 1.3)
-        txt = create_solid_text(line, font_size, (0, y), name=f"Texto_{i}")
+        if align == 'LEFT' or (align == 'LEFT_CENTER_TITLE' and i > 0):
+            x = -PLATE_WIDTH/2 + MARGIN_X
+            current_align = 'LEFT'
+        elif align == 'RIGHT':
+            x = PLATE_WIDTH/2 - MARGIN_X
+            current_align = 'RIGHT'
+        else:
+            x = 0
+            current_align = 'CENTER'
+        txt = create_solid_text(line, font_size, (x, y), align=current_align, name=f"Texto_{i}")
         text_objects.append(txt)
     
     # 4. Criar rodapé
@@ -323,8 +363,12 @@ def main():
         except ValueError:
             pass
     
+    align = 'CENTER'
+    if len(argv) > 3:
+        align = argv[3]
+    
     try:
-        result = generate_plate(text, output, custom_font_size)
+        result = generate_plate(text, output, custom_font_size, align)
         sys.exit(0 if result else 1)
     except Exception as e:
         import traceback

@@ -237,7 +237,7 @@ def validate_text(text):
     return issues
 
 
-def generate_plate(text, font_size):
+def generate_plate(text, font_size, align="CENTER"):
     """Gera a placa"""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"placa_astro_{timestamp}.3mf"
@@ -250,7 +250,8 @@ def generate_plate(text, font_size):
         "--",
         text,
         str(output_path),
-        str(font_size)  # Novo parâmetro
+        str(font_size),  # Novo parâmetro
+        align           # Parâmetro de alinhamento
     ]
     
     try:
@@ -266,6 +267,7 @@ def generate_plate(text, font_size):
         
     except Exception as e:
         return False, None, str(e)
+
 
 
 # ========== LAYOUT ==========
@@ -287,7 +289,7 @@ with st.sidebar:
     st.markdown("### 📝 Tamanho do Texto")
     font_size = st.slider(
         "Tamanho da fonte (mm)",
-        min_value=8,
+        min_value=5,
         max_value=40,
         value=20,
         step=1,
@@ -302,6 +304,25 @@ with st.sidebar:
         <div style="color: rgba(255,255,255,0.6);">{size_desc}</div>
     </div>
     """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Alinhamento
+    st.markdown("### ↔️ Alinhamento do Texto")
+    align_option = st.radio(
+        "Alinhamento",
+        options=["Centro", "Esquerda"],
+        index=0,
+        horizontal=True,
+        label_visibility="collapsed"
+    )
+    align_map = {"Centro": "CENTER", "Esquerda": "LEFT"}
+    text_align = align_map[align_option]
+    
+    if align_option == "Esquerda":
+        center_title = st.checkbox("Centralizar apenas o título (1ª linha)", value=False)
+        if center_title:
+            text_align = "LEFT_CENTER_TITLE"
     
     st.markdown("---")
     
@@ -349,10 +370,19 @@ with col2:
     st.markdown('<div class="card-title">📋 Preview</div>', unsafe_allow_html=True)
     
     if text_input:
+        lines = text_input.split('\n')
+        if text_align == 'LEFT_CENTER_TITLE' and lines:
+            title_html = f"<div style='text-align: center;'>{lines[0]}</div>"
+            rest_html = "<br>".join(lines[1:]) if len(lines) > 1 else ""
+            content_html = title_html + (f"<div style='text-align: left;'>{rest_html}</div>" if rest_html else "")
+        else:
+            align_css = 'left' if text_align == 'LEFT' else 'center'
+            content_html = f"<div style='text-align: {align_css};'>{text_input.replace(chr(10), '<br>')}</div>"
+            
         st.markdown(f"""
         <div style="background: #8B4513; padding: 1.5rem; border-radius: 12px; min-height: 150px; position: relative;">
-            <div style="color: white; font-size: {min(font_size/2, 14)}px; text-align: center; font-weight: bold; padding-top: 1rem;">
-                {text_input.replace(chr(10), '<br>')}
+            <div style="color: white; font-size: {min(font_size/2, 14)}px; font-weight: bold; padding-top: 1rem;">
+                {content_html}
             </div>
             <div style="position: absolute; bottom: 10px; left: 15px; color: white; font-size: 10px;">
                 Condomínio Astro
@@ -387,7 +417,7 @@ if generate_btn and text_input.strip():
         for i in range(50):
             progress.progress(i + 1)
         
-        success, filepath, msg = generate_plate(text_input.strip(), font_size)
+        success, filepath, msg = generate_plate(text_input.strip(), font_size, text_align)
         
         progress.progress(100)
         progress.empty()
