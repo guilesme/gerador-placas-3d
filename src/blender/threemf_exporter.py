@@ -8,16 +8,22 @@ import os
 import uuid
 import datetime
 import json
+from xml.sax.saxutils import quoteattr
 
 NS_CORE = 'http://schemas.microsoft.com/3dmanufacturing/core/2015/02'
 NS_P = 'http://schemas.microsoft.com/3dmanufacturing/production/2015/06'
 NS_BAMBU = 'http://schemas.bambulab.com/package/2021'
 
-DEBUG = True
+DEBUG = os.environ.get("LOG_LEVEL", "INFO").upper() == "DEBUG"
 
 def log(msg):
     if DEBUG:
         print(f"[3MF] {msg}")
+
+
+def xml_attr(value):
+    """Return a safely quoted XML attribute value."""
+    return quoteattr(str(value))
 
 
 def get_mesh_data(obj):
@@ -146,7 +152,7 @@ def build_model_settings(objects_data, assembly_id):
     for obj_data in objects_data:
         lines.extend([
             f'    <part id="{obj_data["id"]}" subtype="normal_part">',
-            f'      <metadata key="name" value="{obj_data["name"]}"/>',
+            f'      <metadata key="name" value={xml_attr(obj_data["name"])}/>',
             f'      <metadata key="extruder" value="{obj_data["extruder"]}"/>',
             f'      <mesh_stat face_count="{obj_data["face_count"]}"/>',
             '    </part>',
