@@ -187,6 +187,7 @@ Entrada util para implementacao futura:
 
 - `.gcode` de uma placa finalizada com cores/configuracoes corretas;
 - idealmente tambem um `.3mf` salvo pelo Bambu Studio depois de ajustar os filamentos manualmente, pois o `.3mf` preserva metadados de projeto com mais fidelidade do que o G-code final.
+- referencia tecnica consolidada em [material-profile-reference.md](material-profile-reference.md).
 
 Validacao:
 

@@ -18,6 +18,7 @@ O formato segue a ideia de [Keep a Changelog](https://keepachangelog.com/en/1.1.
 - Adiciona testes automatizados com `unittest` para validacao de texto e exportador 3MF. (`BUG-011`)
 - Adiciona workflow de CI no GitHub Actions para compilacao Python e testes unitarios.
 - Adiciona templates de bug report, feature request e pull request para GitHub.
+- Documenta perfil validado de materiais/filamentos Bambu para futura `IMP-003`.
 
 ### Fixed
 
