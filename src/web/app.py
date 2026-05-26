@@ -4,11 +4,9 @@ UI/UX Premium com customização de fonte
 """
 
 import streamlit as st
-import subprocess
-import os
-import re
-from pathlib import Path
-from datetime import datetime
+import html
+from plate_service import generate_plate
+from validation import validate_text
 
 # Configuração da página
 st.set_page_config(
@@ -210,66 +208,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Caminhos
-BASE_DIR = Path(__file__).parent.parent.parent
-GENERATOR_SCRIPT = Path(__file__).parent.parent / "blender" / "generator.py"
-OUTPUT_DIR = BASE_DIR / "output"
-
-if not GENERATOR_SCRIPT.exists():
-    GENERATOR_SCRIPT = Path("src/blender/generator.py")
-    OUTPUT_DIR = Path("output")
-
-OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
-
-
-def validate_text(text):
-    """Valida o texto"""
-    issues = []
-    
-    # Caracteres não suportados
-    if re.search(r'[^\w\s\.,\-\!\?\u00C0-\u00FF]', text):
-        issues.append("Alguns caracteres especiais podem não renderizar corretamente")
-    
-    # Texto muito longo
-    if len(text) > 100:
-        issues.append("Texto muito longo pode ficar ilegível")
-    
-    return issues
-
-
-def generate_plate(text, font_size, align="CENTER"):
-    """Gera a placa"""
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"placa_astro_{timestamp}.3mf"
-    output_path = OUTPUT_DIR / filename
-    
-    cmd = [
-        "blender",
-        "--background",
-        "--python", str(GENERATOR_SCRIPT),
-        "--",
-        text,
-        str(output_path),
-        str(font_size),  # Novo parâmetro
-        align           # Parâmetro de alinhamento
-    ]
-    
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
-        
-        if result.returncode != 0:
-            return False, None, result.stderr + "\n" + result.stdout
-        
-        if not output_path.exists() or output_path.stat().st_size < 1000:
-            return False, None, "Arquivo de saída inválido"
-        
-        return True, output_path, "Sucesso"
-        
-    except Exception as e:
-        return False, None, str(e)
-
-
-
 # ========== LAYOUT ==========
 
 # Header
@@ -344,6 +282,8 @@ with st.sidebar:
 
 # Conteúdo Principal
 col1, col2 = st.columns([2, 1])
+validation_errors = []
+validation_warnings = []
 
 with col1:
     st.markdown('<div class="card-title">✏️ Texto da Placa</div>', unsafe_allow_html=True)
@@ -357,9 +297,12 @@ with col1:
     
     if text_input:
         # Validação
-        warnings = validate_text(text_input)
-        for w in warnings:
-            st.markdown(f'<div class="warning-box">⚠️ {w}</div>', unsafe_allow_html=True)
+        validation_errors, validation_warnings = validate_text(text_input)
+        for e in validation_errors:
+            st.error(f"🚫 {e}")
+        for w in validation_warnings:
+            safe_warning = html.escape(w)
+            st.markdown(f'<div class="warning-box">⚠️ {safe_warning}</div>', unsafe_allow_html=True)
         
         # Info do texto
         lines = len([l for l in text_input.split('\n') if l.strip()])
@@ -372,12 +315,13 @@ with col2:
     if text_input:
         lines = text_input.split('\n')
         if text_align == 'LEFT_CENTER_TITLE' and lines:
-            title_html = f"<div style='text-align: center;'>{lines[0]}</div>"
-            rest_html = "<br>".join(lines[1:]) if len(lines) > 1 else ""
+            title_html = f"<div style='text-align: center;'>{html.escape(lines[0])}</div>"
+            rest_html = "<br>".join(html.escape(line) for line in lines[1:]) if len(lines) > 1 else ""
             content_html = title_html + (f"<div style='text-align: left;'>{rest_html}</div>" if rest_html else "")
         else:
             align_css = 'left' if text_align == 'LEFT' else 'center'
-            content_html = f"<div style='text-align: {align_css};'>{text_input.replace(chr(10), '<br>')}</div>"
+            safe_text = html.escape(text_input).replace(chr(10), '<br>')
+            content_html = f"<div style='text-align: {align_css};'>{safe_text}</div>"
             
         st.markdown(f"""
         <div style="background: #8B4513; padding: 1.5rem; border-radius: 12px; min-height: 150px; position: relative;">
@@ -405,22 +349,14 @@ col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
 with col_btn2:
     generate_btn = st.button(
         "🚀 Gerar Placa 3D",
-        disabled=not text_input or not text_input.strip(),
+        disabled=not text_input or not text_input.strip() or bool(validation_errors),
         use_container_width=True
     )
 
 # Processamento
 if generate_btn and text_input.strip():
-    with st.spinner("⏳ Gerando modelo 3D... Isso pode levar alguns segundos."):
-        progress = st.progress(0)
-        
-        for i in range(50):
-            progress.progress(i + 1)
-        
+    with st.spinner("⏳ Gerando modelo 3D... Aguarde, isso pode levar ate 2 minutos."):
         success, filepath, msg = generate_plate(text_input.strip(), font_size, text_align)
-        
-        progress.progress(100)
-        progress.empty()
         
         if success:
             st.markdown("""

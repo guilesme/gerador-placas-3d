@@ -36,7 +36,7 @@ FOOTER_FONT_SIZE = 8.0
 FOOTER_MARGIN_X = 15.0
 FOOTER_MARGIN_Y = 12.0
 
-DEBUG = True
+DEBUG = os.environ.get("LOG_LEVEL", "INFO").upper() == "DEBUG"
 
 def log(msg):
     if DEBUG:
@@ -353,7 +353,9 @@ def main():
         sys.exit(1)
     
     text = argv[0]
-    output = argv[1] if len(argv) > 1 else "/app/output/placa.3mf"
+    default_output = Path(__file__).parent.parent.parent / "output" / "placa.3mf"
+    default_output.parent.mkdir(exist_ok=True, parents=True)
+    output = argv[1] if len(argv) > 1 else str(default_output)
     
     # Novo: Tamanho de fonte customizado (opcional)
     custom_font_size = None
