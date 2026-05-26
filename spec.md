@@ -1,86 +1,161 @@
-# SPEC.MD - Agente Gerador de Placas 3D (Antigravity)
+# Especificacao Tecnica - Gerador de Placas 3D
 
-## 1. Visão Geral
-Aplicação containerizada para automação de design de placas de sinalização 3D. O sistema transforma strings de texto em modelos `.3mf` prontos para impressão no Bambu Lab A1, respeitando padrões estéticos rigorosos, dimensões fixas e requisitos de multi-material (AMS).
+Versao da especificacao: `0.1.1-dev`
 
-## 2. Requisitos Funcionais
+Esta especificacao descreve o comportamento atual validado da aplicacao. Ela substitui a especificacao inicial gerada durante a fase de prototipo.
 
-### Entrada (Input)
-- **Interface Web:** Campo de texto simples via Streamlit.
-- **Múltiplas Linhas:** Suporte a quebra de linha (Enter = novo parágrafo na placa).
-- **Validação:**
-    - **Auto-scale:** O texto deve ser redimensionado automaticamente para caber na área útil.
-    - **Legibilidade:** Limite mínimo de tamanho de fonte (5mm). Se o texto for longo demais e ferir a legibilidade (distância de 2m), exibir alerta de confirmação (Continuar/Cancelar).
-    - **Caracteres:** Detecção de caracteres não suportados pela fonte "Roboto Bold". Exibir aviso se detectado.
+## 1. Visao Geral
 
-### Processamento (Core)
-1.  **Carregamento do Template:** Geração procedural baseada em dimensões fixas.
-2.  **Texto Principal:**
-    - Fonte: Roboto Bold.
-    - Tamanho Padrão: 14mm (auto-scale entre 5mm e 14mm).
-    - Posicionamento: Centralizado (H/V) na face superior.
-    - Operação: Extrusão direta do texto com altura total de 0.7mm (0.3mm escavado + 0.4mm salto).
-3.  **Texto Fixo (Rodapé):**
-    - Conteúdo: "Condomínio Astro".
-    - Posição: Inferior Esquerdo (offset: X=15mm, Y=10mm da borda).
-    - Tamanho de Fonte: 6mm.
-4.  **Materiais (AMS):**
-    - Slot 1 (Base/Placa): Cor Marrom.
-    - Slot 2 (Texto): Cor Branca.
-    - **Técnica:** Objetos separados na exportação 3MF com atribuição de extruder ID para que o Bambu Studio reconheça as cores automaticamente.
+O projeto e uma aplicacao containerizada para gerar placas de sinalizacao 3D em formato `.3mf`, usando Streamlit como interface e Blender em modo headless para criar geometria e exportar o modelo.
 
-### Saída (Output)
-- **Download:** Botão na interface Streamlit para baixar o arquivo `.3mf` gerado imediatamente após o sucesso.
-- **Logs:** Visualização de logs de erro na interface em caso de falha.
+O caso de uso atual e a geracao de placas para o Condominio Astro, com base marrom e texto branco, destinadas ao fluxo Bambu Studio / Bambu Lab A1.
 
-## 3. Especificações Técnicas e Design
+## 2. Entrada
 
-### Dimensões da Placa
-- **Tamanho Total:** 200mm (L) x 180mm (A) x 2mm (P).
-- **Geometria Específica:** Retângulo com corte oblíquo (chanfro) na quina inferior direita.
-- **Medida do Chanfro:** 42.48mm (diagonal).
+### Interface
 
-### Margens e Áreas Úteis
-- **Margem Lateral (X):** 20mm de cada lado.
-- **Margem Vertical (Y):** 30mm (topo e base).
-- **Área Útil do Texto Principal:** 160mm x 120mm.
+- Campo de texto via Streamlit.
+- Suporte a multiplas linhas.
+- Controle de tamanho de fonte principal.
+- Controle de alinhamento:
+  - centro;
+  - esquerda;
+  - esquerda com primeira linha centralizada.
 
-### Z-Logic (Profundidade)
-| Camada | Valor | Descrição |
-|--------|-------|-----------|
-| `Z_surface` | 2.0mm | Topo da placa |
-| `Z_text_base` | 1.7mm | Base do texto (escavado 0.3mm) |
-| `Z_text_top` | 2.4mm | Topo do texto (salto 0.4mm) |
-| `TEXT_TOTAL_HEIGHT` | 0.7mm | Altura total do texto sólido |
+### Validacao
 
-### Estrutura do Projeto
+A validacao retorna dois tipos de resultado:
+
+- `errors`: bloqueiam a geracao;
+- `warnings`: avisam o usuario, mas permitem continuar.
+
+Regras atuais:
+
+- caracteres nao suportados pela politica da aplicacao geram erro bloqueante;
+- texto com mais de 100 caracteres gera warning de legibilidade;
+- texto inserido no preview HTML deve ser escapado antes da renderizacao.
+
+## 3. Geometria da Placa
+
+| Campo | Valor |
+|---|---:|
+| Largura | 200mm |
+| Altura | 180mm |
+| Espessura | 2mm |
+| Chanfro inferior direito | 42.48mm |
+
+A placa e gerada proceduralmente como malha solida, com corte obliquo na quina inferior direita.
+
+## 4. Texto Principal
+
+| Campo | Valor atual |
+|---|---:|
+| Fonte | Roboto Bold |
+| Tamanho padrao no gerador | 20mm |
+| Tamanho minimo | 5mm |
+| Slider da UI | 5mm a 40mm |
+| Largura util | 160mm |
+| Altura util considerada no gerador | 100mm |
+| Altura total do texto 3D | 0.7mm |
+
+Observacao: o slider permite valores acima do padrao para textos curtos. Textos longos ainda precisam de validacao visual, pois tamanho manual alto pode extrapolar a area util.
+
+## 5. Rodape
+
+| Campo | Valor atual |
+|---|---:|
+| Texto | Condominio Astro |
+| Fonte | Roboto Bold |
+| Tamanho | 8mm |
+| Offset X | 15mm da borda esquerda |
+| Offset Y | 12mm da borda inferior |
+
+O nome do rodape ainda e fixo no codigo. A melhoria para torna-lo configuravel esta registrada como `IMP-001`.
+
+## 6. Z-Logic
+
+| Camada | Valor | Descricao |
+|---|---:|---|
+| `Z_PLATE_TOP` | 2.0mm | Topo da placa |
+| `Z_TEXT_BASE` | 1.7mm | Base do texto, 0.3mm abaixo do topo |
+| `Z_TEXT_TOP` | 2.4mm | Topo do texto, 0.4mm acima da placa |
+| `TEXT_HEIGHT` | 0.7mm | Altura total do solido do texto |
+
+## 7. Materiais e Bambu Studio
+
+Objetos exportados:
+
+- `Placa`: extruder/material 1;
+- `Texto`: extruder/material 2.
+
+Cores pretendidas:
+
+- Slot 1: marrom para a placa;
+- Slot 2: branco para texto.
+
+Validacao manual atual:
+
+- o arquivo `.3mf` abre no Bambu Studio;
+- a geometria aparece corretamente;
+- ainda foi necessario adicionar uma segunda cor/filamento e vincular o objeto `Text` ao segundo material manualmente.
+
+Essa padronizacao de filamentos e vinculo automatico esta registrada como `IMP-003`.
+
+## 8. Saida
+
+- Arquivo `.3mf`;
+- download direto via Streamlit;
+- arquivo salvo na pasta `output/`;
+- validacao minima: arquivo existe e possui mais de 1KB.
+
+## 9. Tratamento de Erros
+
+Timeout:
+
+- 120 segundos.
+
+Erros tratados no frontend:
+
+- timeout do subprocesso;
+- Blender ausente;
+- erro de sistema ao executar Blender;
+- retorno nao-zero do Blender com logs preservados;
+- arquivo de saida ausente ou pequeno demais.
+
+## 10. Estrutura Atual
+
 ```text
-/
-├── assets/
-│   ├── templates/              # Base .3mf files (se necessário)
-│   └── fonts/                  # Roboto-Bold.ttf
-├── src/
-│   ├── blender/
-│   │   ├── generator.py        # Script bpy principal
-│   │   └── threemf_exporter.py # Módulo de exportação 3MF
-│   └── web/
-│       └── app.py              # Streamlit Frontend
-├── output/                     # Staging area para arquivos gerados
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
-└── spec.md
+assets/
+  fonts/
+    Roboto-Bold.ttf
+src/
+  blender/
+    generator.py
+    threemf_exporter.py
+  web/
+    app.py
+    plate_service.py
+    validation.py
+tests/
+docs/
+output/
 ```
 
-## 4. Tratamento de Erros e Validação
-- **Exit Codes:** Script Python/Blender retorna `0` (Sucesso) ou `1` (Erro).
-- **File Check:** Verificação de existência e tamanho (>1KB) do arquivo de saída.
-- **Timeout:** Limite de 120 segundos (2 minutos) para geração do arquivo.
-- **UX de Erro:** Exibir mensagem descritiva no frontend, opção de ver logs técnicos, e botão "Reiniciar" para limpar estado.
+## 11. Testes
 
-## 5. Deployment
-- **Docker:**
-    - Imagem base: `python:3.10-slim` com Blender 4.0.2 instalado.
-    - **Porta:** 8501 (Streamlit).
-    - **Persistência:** Arquivos gerados em pasta temporária dentro do container, servidos via HTTP pelo Streamlit para download direto.
-    - **Fontes:** Roboto-Bold copiada para `/usr/share/fonts/truetype/` durante build.
+Comandos de validacao:
+
+```bash
+python -m py_compile src/web/app.py src/web/validation.py src/web/plate_service.py src/blender/generator.py src/blender/threemf_exporter.py
+python -m unittest discover -s tests -v
+docker compose config --quiet
+```
+
+Validacoes manuais:
+
+- abrir a UI em `http://localhost:8501`;
+- gerar placa com texto simples;
+- baixar `.3mf`;
+- abrir/importar no Bambu Studio;
+- confirmar mapeamento de materiais quando `IMP-003` for implementado.
+
