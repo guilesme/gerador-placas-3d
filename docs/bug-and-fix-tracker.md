@@ -36,7 +36,7 @@ Severidade:
 | BUG-012 | Low | Verified | Docs | Documentos aparentam mojibake/encoding quebrado no ambiente atual | Revisao Codex | v0.1.1 |
 | IMP-001 | Medium | Planned | Product | Tornar nome do condominio configuravel | Relatorios + Revisao Codex | v0.2.0 |
 | IMP-002 | Low | Planned | Performance | Avaliar busca binaria em `calculate_font_size()` | Plano LLM | v0.2.0 |
-| IMP-003 | Medium | Planned | 3MF/Bambu | Padronizar filamentos, cores e vinculo automatico do texto ao segundo material | Validacao manual | v0.2.0 |
+| IMP-003 | Medium | Fixed | 3MF/Bambu | Padronizar filamentos, cores e vinculo automatico do texto ao segundo material | Validacao manual | v0.2.0 |
 | IMP-004 | Medium | Verified | Product/Web/Blender | Suportar placa reduzida 200 x 128mm alem da padrao 200 x 180mm | Implementacao urgente | v0.2.0 |
 
 ## Detalhamento
@@ -184,7 +184,14 @@ Objetivo:
 - reduzir ajustes manuais no Bambu Studio;
 - aproximar o arquivo gerado do perfil final usado em producao.
 
-Entrada util para implementacao futura:
+Implementacao:
+
+- `filament_settings_1.config` usa `Voolt3D PETG Premium - Marrom`, cor `#804000`, tipo `PETG` e ID `P2ea0049`;
+- `filament_settings_2.config` usa `Voolt3D PETG Premium - White`, cor `#FFFFFF`, tipo `PETG` e ID `GFG99`;
+- temperaturas principais foram alinhadas ao G-code validado: bico `235`, mesa fria `60`, mesa quente/texturizada `70`;
+- o `model_settings.config` mantem `Placa` no extruder 1 e `Texto` no extruder 2.
+
+Entrada usada:
 
 - `.gcode` de uma placa finalizada com cores/configuracoes corretas;
 - idealmente tambem um `.3mf` salvo pelo Bambu Studio depois de ajustar os filamentos manualmente, pois o `.3mf` preserva metadados de projeto com mais fidelidade do que o G-code final.
@@ -196,6 +203,11 @@ Validacao:
 - confirmar que ha dois filamentos listados;
 - confirmar que o objeto `Texto` ja esta vinculado ao segundo filamento;
 - confirmar que o slice usa as cores/material slots esperados.
+
+Status de validacao:
+
+- testes automatizados validam JSON dos dois perfis e presenca dos arquivos no ZIP `.3mf`;
+- validacao manual no Bambu Studio ainda pendente apos gerar novo arquivo com esta versao.
 
 ### IMP-004 - Suportar placa reduzida 200 x 128mm
 

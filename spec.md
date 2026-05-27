@@ -93,14 +93,15 @@ Objetos exportados:
 
 Cores pretendidas:
 
-- Slot 1: marrom para a placa;
-- Slot 2: branco para texto.
+- Slot 1: PETG marrom `#804000` para a placa, perfil `Voolt3D PETG Premium - Marrom`;
+- Slot 2: PETG branco `#FFFFFF` para texto, perfil `Voolt3D PETG Premium - White`.
 
 Validacao manual atual:
 
 - o arquivo `.3mf` abre no Bambu Studio;
 - a geometria aparece corretamente;
-- ainda foi necessario adicionar uma segunda cor/filamento e vincular o objeto `Text` ao segundo material manualmente.
+- testes automatizados confirmam que os dois arquivos `filament_settings_*.config` usam os perfis PETG padronizados;
+- ainda falta validar manualmente no Bambu Studio se um novo arquivo gerado ja abre sem ajuste manual de filamento/material.
 
 Essa padronizacao de filamentos e vinculo automatico esta registrada como `IMP-003`.
 

@@ -16,6 +16,47 @@ NS_BAMBU = 'http://schemas.bambulab.com/package/2021'
 
 DEBUG = os.environ.get("LOG_LEVEL", "INFO").upper() == "DEBUG"
 
+BAMBU_FILAMENT_PROFILES = {
+    1: {
+        "name": "Voolt3D PETG Premium - Marrom",
+        "type": "PETG",
+        "color": "#804000",
+        "vendor": "Voolt3D",
+        "filament_id": "P2ea0049",
+        "density": "1.27",
+        "diameter": "1.75",
+        "max_volumetric_speed": "10",
+        "flow_ratio": "1",
+        "nozzle_temperature": "235",
+        "nozzle_temperature_initial_layer": "235",
+        "cool_plate_temp": "60",
+        "cool_plate_temp_initial_layer": "60",
+        "hot_plate_temp": "70",
+        "hot_plate_temp_initial_layer": "70",
+        "textured_plate_temp": "70",
+        "textured_plate_temp_initial_layer": "70",
+    },
+    2: {
+        "name": "Voolt3D PETG Premium - White",
+        "type": "PETG",
+        "color": "#FFFFFF",
+        "vendor": "Generic",
+        "filament_id": "GFG99",
+        "density": "1.27",
+        "diameter": "1.75",
+        "max_volumetric_speed": "10",
+        "flow_ratio": "1",
+        "nozzle_temperature": "235",
+        "nozzle_temperature_initial_layer": "235",
+        "cool_plate_temp": "60",
+        "cool_plate_temp_initial_layer": "60",
+        "hot_plate_temp": "70",
+        "hot_plate_temp_initial_layer": "70",
+        "textured_plate_temp": "70",
+        "textured_plate_temp_initial_layer": "70",
+    },
+}
+
 def log(msg):
     if DEBUG:
         print(f"[3MF] {msg}")
@@ -192,12 +233,38 @@ def build_model_rels(objects_file):
 </Relationships>'''
 
 
-def build_filament_settings(extruder, color, name):
+def get_filament_profile(extruder):
+    return BAMBU_FILAMENT_PROFILES.get(int(extruder), BAMBU_FILAMENT_PROFILES[1])
+
+
+def build_filament_settings(extruder, color=None, name=None):
+    profile = dict(get_filament_profile(extruder))
+    if color is not None:
+        profile["color"] = color
+    if name is not None:
+        profile["name"] = name
+
     return json.dumps({
-        "default_filament_colour": [color],
-        "filament_settings_id": [name],
+        "cool_plate_temp": [profile["cool_plate_temp"]],
+        "cool_plate_temp_initial_layer": [profile["cool_plate_temp_initial_layer"]],
+        "default_filament_colour": [profile["color"]],
+        "filament_colour": [profile["color"]],
+        "filament_density": [profile["density"]],
+        "filament_diameter": [profile["diameter"]],
+        "filament_flow_ratio": [profile["flow_ratio"]],
+        "filament_id": [profile["filament_id"]],
+        "filament_max_volumetric_speed": [profile["max_volumetric_speed"]],
+        "filament_settings_id": [profile["name"]],
+        "filament_type": [profile["type"]],
+        "filament_vendor": [profile["vendor"]],
         "from": "project",
-        "name": name,
+        "hot_plate_temp": [profile["hot_plate_temp"]],
+        "hot_plate_temp_initial_layer": [profile["hot_plate_temp_initial_layer"]],
+        "name": profile["name"],
+        "nozzle_temperature": [profile["nozzle_temperature"]],
+        "nozzle_temperature_initial_layer": [profile["nozzle_temperature_initial_layer"]],
+        "textured_plate_temp": [profile["textured_plate_temp"]],
+        "textured_plate_temp_initial_layer": [profile["textured_plate_temp_initial_layer"]],
         "version": "2.3.0.70"
     }, indent=4)
 
@@ -248,8 +315,8 @@ def export(filepath, objects):
         
         # Metadata
         zf.writestr('Metadata/model_settings.config', build_model_settings(objects_data, assembly_id))
-        zf.writestr('Metadata/filament_settings_1.config', build_filament_settings(1, "#8B4513", "PLA Brown"))
-        zf.writestr('Metadata/filament_settings_2.config', build_filament_settings(2, "#FFFFFF", "PLA White"))
+        zf.writestr('Metadata/filament_settings_1.config', build_filament_settings(1))
+        zf.writestr('Metadata/filament_settings_2.config', build_filament_settings(2))
     
     log(f"Arquivo: {os.path.getsize(filepath)} bytes")
     log("=== CONCLUÍDO ===")
