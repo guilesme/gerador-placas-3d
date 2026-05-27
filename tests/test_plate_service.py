@@ -64,10 +64,9 @@ class PlateServiceTests(unittest.TestCase):
         with mock.patch.dict("os.environ", {"BLENDER_PATH": "C:/Blender/blender.exe"}):
             self.assertEqual(plate_service.get_blender_bin(), "C:/Blender/blender.exe")
 
-    def test_get_blender_bin_uses_path_lookup(self):
+    def test_get_blender_bin_defaults_to_blender_command(self):
         with mock.patch.dict("os.environ", {}, clear=True):
-            with mock.patch("shutil.which", return_value="C:/Tools/blender.exe"):
-                self.assertEqual(plate_service.get_blender_bin(), "C:/Tools/blender.exe")
+            self.assertEqual(plate_service.get_blender_bin(), "blender")
 
 
 if __name__ == "__main__":

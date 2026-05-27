@@ -1,7 +1,6 @@
 """Service helpers for invoking Blender plate generation."""
 
 import os
-import shutil
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -18,20 +17,7 @@ if not GENERATOR_SCRIPT.exists():
 
 def get_blender_bin():
     """Return the configured Blender executable path."""
-    configured_path = os.environ.get("BLENDER_PATH")
-    if configured_path:
-        return configured_path
-
-    path_blender = shutil.which("blender")
-    if path_blender:
-        return path_blender
-
-    blender_root = Path(os.environ.get("ProgramFiles", "C:/Program Files")) / "Blender Foundation"
-    candidates = sorted(blender_root.glob("Blender */blender.exe"), reverse=True)
-    if candidates:
-        return str(candidates[0])
-
-    return "blender"
+    return os.environ.get("BLENDER_PATH", "blender")
 
 
 def ensure_output_dir():
@@ -75,7 +61,7 @@ def generate_plate(text, font_size, align="CENTER", plate_height=180):
     except FileNotFoundError:
         return False, None, (
             f"Executavel do Blender nao encontrado: {blender_bin}. "
-            "Verifique o PATH ou defina BLENDER_PATH."
+            "Verifique se a aplicacao esta rodando pelo Docker ou se BLENDER_PATH esta definido no ambiente."
         )
     except OSError as e:
         return False, None, f"Erro de sistema ao executar o Blender: {e}"

@@ -48,7 +48,7 @@ http://localhost:8501
 
 ## Como Rodar Localmente
 
-Use este modo apenas se o Blender tambem estiver instalado no host. Rodar somente o Streamlit fora do container nao usa o Blender instalado no Docker.
+O modo local serve principalmente para desenvolvimento da interface e dos testes. A geracao real deve rodar pelo Docker, onde o Blender fica instalado e configurado.
 
 Instale as dependencias Python:
 
@@ -56,7 +56,7 @@ Instale as dependencias Python:
 python -m pip install -r requirements.txt
 ```
 
-Garanta que o Blender esta instalado e acessivel pelo `PATH`, ou defina:
+Se for executar geracao real fora do Compose por algum motivo, o ambiente precisa definir o caminho do Blender:
 
 ```bash
 BLENDER_PATH=/caminho/para/blender

@@ -42,7 +42,7 @@ v0.1.0
 
 | Validacao | Status | Motivo |
 |---|---|---|
-| Rodar geracao real com Blender local | Blocked | `blender` nao esta disponivel no PATH local desta sessao. |
+| Rodar geracao real fora do Docker | Blocked | O runtime oficial do Blender e o container Docker; execucao fora dele nao foi validada nesta sessao. |
 | Testar `BLENDER_PATH` invalido pela UI | Pass | Validado por teste automatizado em `tests/test_plate_service.py`. |
 | Vinculo automatico do texto ao segundo filamento | Pending | Usuario precisou adicionar segunda cor e vincular `Text` manualmente. Registrado como `IMP-003`. |
 
@@ -83,4 +83,4 @@ Branch: `codex/plate-height-options`
 ### Itens entregues nesta leva
 
 - `IMP-004`: selecao entre placa padrao `200 x 180mm` e reduzida `200 x 128mm`.
-- Melhoria de runtime: descoberta automatica do Blender local quando `BLENDER_PATH` nao estiver definido.
+- Runtime mantido alinhado ao Docker: `BLENDER_PATH` quando definido e fallback `blender` no proprio ambiente de execucao.

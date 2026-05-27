@@ -14,7 +14,6 @@ O formato segue a ideia de [Keep a Changelog](https://keepachangelog.com/en/1.1.
 ### Added
 
 - Adiciona opcao de tamanho da placa entre padrao `200 x 180 mm` e reduzida `200 x 128 mm`. (`IMP-004`)
-- Adiciona descoberta automatica do Blender instalado no host quando `BLENDER_PATH` nao estiver definido.
 
 ### Changed
 
