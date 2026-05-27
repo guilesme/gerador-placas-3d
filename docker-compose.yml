@@ -10,4 +10,5 @@ services:
     environment:
       - BLENDER_PATH=/opt/blender/blender
       - LOG_LEVEL=INFO
+      - CONDO_NAME=Condominio Astro
     restart: unless-stopped

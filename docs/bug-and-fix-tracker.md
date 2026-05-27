@@ -34,7 +34,7 @@ Severidade:
 | BUG-010 | Low | Verified | Docker | `docker-compose.yml` usa `version` deprecated | Relatorio LLM | v0.1.1 |
 | BUG-011 | Medium | Verified | Tests | Projeto nao possui testes automatizados | Relatorios + Revisao Codex | v0.1.2 |
 | BUG-012 | Low | Verified | Docs | Documentos aparentam mojibake/encoding quebrado no ambiente atual | Revisao Codex | v0.1.1 |
-| IMP-001 | Medium | Planned | Product | Tornar nome do condominio configuravel | Relatorios + Revisao Codex | v0.2.0 |
+| IMP-001 | Medium | Fixed | Product | Tornar nome do condominio configuravel | Relatorios + Revisao Codex | v0.2.0 |
 | IMP-002 | Low | Planned | Performance | Avaliar busca binaria em `calculate_font_size()` | Plano LLM | v0.2.0 |
 | IMP-003 | Medium | Fixed | 3MF/Bambu | Padronizar filamentos, cores e vinculo automatico do texto ao segundo material | Validacao manual | v0.2.0 |
 | IMP-004 | Medium | Verified | Product/Web/Blender | Suportar placa reduzida 200 x 128mm alem da padrao 200 x 180mm | Implementacao urgente | v0.2.0 |
@@ -172,6 +172,26 @@ Fix proposto:
 - criar smoke tests para funcoes puras do exportador;
 - criar teste de estrutura ZIP do `.3mf`;
 - manter teste com Blender como manual ou CI opcional, pois depende de binario pesado.
+
+### IMP-001 - Tornar nome do condominio configuravel
+
+Contexto: o rodape da placa usava um texto fixo no frontend e no gerador Blender, limitando a aplicacao ao uso direto no Condominio Astro.
+
+Implementacao:
+
+- `docker-compose.yml` documenta o padrao com `CONDO_NAME=Condominio Astro`;
+- a UI usa `CONDO_NAME` como valor inicial e permite editar o texto do rodape antes da geracao;
+- o preview HTML escapa o texto do rodape antes de renderizar;
+- `plate_service.generate_plate()` repassa o rodape para o Blender;
+- `generator.py` aceita `footer_text` pela CLI e usa fallback seguro quando o valor esta vazio;
+- o rodape continua com fonte Roboto Bold, tamanho 8mm e posicao fixa no canto inferior esquerdo.
+
+Validacao:
+
+- teste unitario garante que o texto do rodape e enviado ao comando Blender;
+- `python -m py_compile`;
+- `python -m unittest discover -s tests -v`;
+- validacao manual no Docker ainda recomendada antes de marcar como `Verified`.
 
 ### IMP-003 - Padronizar filamentos, cores e vinculo do texto
 

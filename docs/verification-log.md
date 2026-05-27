@@ -103,3 +103,21 @@ Branch: `codex/imp-003-bambu-material-profile`
 - `model_settings.config` mantem `Placa` no extruder 1 e `Texto` no extruder 2.
 - `IMP-003` permanece como `Fixed`, nao `Verified`, porque o preenchimento automatico dos filamentos ainda precisa de investigacao adicional.
 - `IMP-005` criado para rastrear a investigacao dos metadados extras do Bambu Studio.
+
+## 2026-05-27 - Rodape configuravel `IMP-001`
+
+Branch: `codex/imp-001-rodape-configuravel`
+
+### Validacoes executadas
+
+| Validacao | Status | Observacao |
+|---|---|---|
+| `python -m py_compile src/web/app.py src/web/validation.py src/web/plate_service.py src/blender/generator.py src/blender/threemf_exporter.py tests/test_validation.py tests/test_threemf_exporter.py tests/test_plate_service.py` | Pass | Sintaxe dos modulos principais e testes validada. |
+| `python -m unittest discover -s tests -v` | Pass | 18 testes executados com sucesso, incluindo repasse do rodape ao comando Blender. |
+| `docker compose config --quiet` | Pass | Configuracao Compose valida com `CONDO_NAME`. |
+| Gerar novo `.3mf` no Docker com rodape customizado | Pending | Necessario para marcar `IMP-001` como `Verified`. |
+
+### Itens entregues nesta leva
+
+- `IMP-001`: rodape configuravel pela UI, com padrao `CONDO_NAME` no container.
+- `plate_service.py` e `generator.py` passam a transportar o texto do rodape ate a criacao do modelo.

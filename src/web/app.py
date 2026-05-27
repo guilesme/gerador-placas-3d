@@ -3,10 +3,13 @@ Gerador de Placas 3D - Frontend Streamlit v1.1
 UI/UX Premium com customização de fonte
 """
 
-import streamlit as st
 import html
+import os
+import streamlit as st
 from plate_service import generate_plate
 from validation import validate_text
+
+DEFAULT_CONDO_NAME = os.environ.get("CONDO_NAME", "Condominio Astro")
 
 # Configuração da página
 st.set_page_config(
@@ -211,10 +214,10 @@ st.markdown("""
 # ========== LAYOUT ==========
 
 # Header
-st.markdown("""
+st.markdown(f"""
 <div class="main-header">
     <h1>🏢 Gerador de Placas 3D</h1>
-    <p>Condomínio Astro • Padrão oficial de sinalização</p>
+    <p>{html.escape(DEFAULT_CONDO_NAME)} • Padrão oficial de sinalização</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -244,6 +247,18 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
     
+    st.markdown("---")
+
+    # Rodape
+    st.markdown("### Rodape")
+    footer_text = st.text_input(
+        "Texto do rodape",
+        value=DEFAULT_CONDO_NAME,
+        max_chars=40,
+        key="footer_text",
+        help="Texto exibido no canto inferior esquerdo da placa."
+    ).strip() or DEFAULT_CONDO_NAME
+
     st.markdown("---")
 
     # Altura da placa
@@ -285,7 +300,7 @@ with st.sidebar:
     - **Placa:** 200 x {plate_height} mm
     - **Espessura:** 2 mm
     - **Relevo:** 0.7 mm
-    - **Rodapé:** 8 mm (fixo)
+    - **Rodapé:** 8 mm
     """)
     
     st.markdown("---")
@@ -344,7 +359,7 @@ with col2:
                 {content_html}
             </div>
             <div style="position: absolute; bottom: 10px; left: 15px; color: white; font-size: 10px;">
-                Condomínio Astro
+                {html.escape(footer_text)}
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -371,7 +386,7 @@ with col_btn2:
 # Processamento
 if generate_btn and text_input.strip():
     with st.spinner("⏳ Gerando modelo 3D... Aguarde, isso pode levar ate 2 minutos."):
-        success, filepath, msg = generate_plate(text_input.strip(), font_size, text_align, plate_height)
+        success, filepath, msg = generate_plate(text_input.strip(), font_size, text_align, plate_height, footer_text)
         
         if success:
             st.markdown("""
@@ -408,6 +423,6 @@ if generate_btn and text_input.strip():
 # Footer
 st.markdown("""
 <div class="footer">
-    <p>🏢 Gerador de Placas 3D v1.1 • Condomínio Astro</p>
+    <p>🏢 Gerador de Placas 3D v1.1</p>
 </div>
 """, unsafe_allow_html=True)

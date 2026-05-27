@@ -25,7 +25,7 @@ def ensure_output_dir():
     OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
 
-def generate_plate(text, font_size, align="CENTER", plate_height=180):
+def generate_plate(text, font_size, align="CENTER", plate_height=180, footer_text="Condominio Astro"):
     """Run Blender in background mode and return (success, filepath, message)."""
     ensure_output_dir()
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -43,6 +43,7 @@ def generate_plate(text, font_size, align="CENTER", plate_height=180):
         str(font_size),
         align,
         str(plate_height),
+        footer_text,
     ]
 
     try:

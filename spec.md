@@ -16,6 +16,7 @@ O caso de uso atual e a geracao de placas para o Condominio Astro, com base marr
 
 - Campo de texto via Streamlit.
 - Suporte a multiplas linhas.
+- Campo de texto para configurar o rodape, com padrao vindo de `CONDO_NAME`.
 - Controle de tamanho de fonte principal.
 - Controle de tamanho da placa:
   - padrao: 200 x 180mm;
@@ -67,13 +68,13 @@ Observacao: textos longos ainda precisam de validacao visual, principalmente na 
 
 | Campo | Valor atual |
 |---|---:|
-| Texto | Condominio Astro |
+| Texto | Configuravel pela UI; padrao `CONDO_NAME` ou `Condominio Astro` |
 | Fonte | Roboto Bold |
 | Tamanho | 8mm |
 | Offset X | 15mm da borda esquerda |
 | Offset Y | 12mm da borda inferior |
 
-O nome do rodape ainda e fixo no codigo. A melhoria para torna-lo configuravel esta registrada como `IMP-001`.
+O texto do rodape e enviado ao Blender junto com os demais parametros de geracao.
 
 ## 6. Z-Logic
 
