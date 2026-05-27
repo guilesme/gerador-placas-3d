@@ -22,7 +22,7 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 - Ajuste de tamanho de fonte e alinhamento.
 - Selecao entre placa padrao `200 x 180 mm` e reduzida `200 x 128 mm`.
 - Rodape fixo da placa.
-- Area de output local para download do arquivo gerado.
+- Area de output da aplicacao para download do arquivo gerado.
 
 ## Stack
 
@@ -34,7 +34,7 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 
 ## Como Rodar
 
-O modo recomendado e rodar pelo Docker, porque o Blender usado pela aplicacao fica dentro do container.
+A aplicacao deve ser executada pelo Docker Compose. O Blender faz parte do container e nao deve ser instalado nem descoberto no Windows/host para o fluxo normal.
 
 ```bash
 docker compose up --build
@@ -46,27 +46,9 @@ Depois acesse:
 http://localhost:8501
 ```
 
-## Como Rodar Localmente
+## Desenvolvimento
 
-O modo local serve principalmente para desenvolvimento da interface e dos testes. A geracao real deve rodar pelo Docker, onde o Blender fica instalado e configurado.
-
-Instale as dependencias Python:
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-Se for executar geracao real fora do Compose por algum motivo, o ambiente precisa definir o caminho do Blender:
-
-```bash
-BLENDER_PATH=/caminho/para/blender
-```
-
-Execute:
-
-```bash
-streamlit run src/web/app.py
-```
+Os comandos Python locais sao usados apenas para validacao rapida de sintaxe e testes unitarios que nao dependem do Blender. Para executar a aplicacao completa e gerar `.3mf`, use sempre o Docker Compose.
 
 ## Testes
 
@@ -82,7 +64,7 @@ Testes automatizados:
 python -m unittest discover -s tests -v
 ```
 
-Observacao: os testes atuais nao exigem Blender. A geracao real de `.3mf` ainda deve ser validada manualmente ou em ambiente com Blender instalado.
+Observacao: os testes atuais nao exigem Blender. A geracao real de `.3mf` deve ser validada pelo container Docker.
 
 ## Estrutura
 

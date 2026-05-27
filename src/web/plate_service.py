@@ -61,7 +61,7 @@ def generate_plate(text, font_size, align="CENTER", plate_height=180):
     except FileNotFoundError:
         return False, None, (
             f"Executavel do Blender nao encontrado: {blender_bin}. "
-            "Verifique se a aplicacao esta rodando pelo Docker ou se BLENDER_PATH esta definido no ambiente."
+            "Verifique se o container Docker foi construido corretamente e se BLENDER_PATH esta definido no container."
         )
     except OSError as e:
         return False, None, f"Erro de sistema ao executar o Blender: {e}"

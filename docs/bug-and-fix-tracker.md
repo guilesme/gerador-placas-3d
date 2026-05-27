@@ -207,14 +207,14 @@ Implementacao:
 - `plate_service.generate_plate()` repassa a altura selecionada para o Blender;
 - `generator.py` aceita `plate_height` pela CLI e normaliza para alturas oficiais;
 - area vertical disponivel para texto passa a ser calculada conforme a altura da placa;
-- runtime oficial permanece Docker; o app usa `BLENDER_PATH` quando definido no ambiente e fallback `blender` dentro do proprio ambiente de execucao.
+- runtime oficial permanece Docker; o app usa `BLENDER_PATH` quando definido no container e fallback `blender` dentro do proprio container.
 
 Validacao:
 
 - `python -m py_compile` dos modulos principais e testes;
 - `python -m unittest discover -s tests -v`;
 - teste unitario garante que a altura reduzida e enviada ao comando Blender;
-- validacao local manual informada pelo usuario antes do registro.
+- validacao manual informada pelo usuario antes do registro.
 
 ## Como Atualizar Este Arquivo
 

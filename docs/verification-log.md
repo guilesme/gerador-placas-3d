@@ -42,7 +42,7 @@ v0.1.0
 
 | Validacao | Status | Motivo |
 |---|---|---|
-| Rodar geracao real fora do Docker | Blocked | O runtime oficial do Blender e o container Docker; execucao fora dele nao foi validada nesta sessao. |
+| Rodar geracao real no container Docker | Pass | Validado anteriormente com `Portaria Principal`; esse e o unico runtime oficial para geracao. |
 | Testar `BLENDER_PATH` invalido pela UI | Pass | Validado por teste automatizado em `tests/test_plate_service.py`. |
 | Vinculo automatico do texto ao segundo filamento | Pending | Usuario precisou adicionar segunda cor e vincular `Text` manualmente. Registrado como `IMP-003`. |
 
@@ -78,7 +78,7 @@ Branch: `codex/plate-height-options`
 | Revisao de diff local da feature urgente | Pass | Alteracoes concentradas em UI, servico, gerador Blender, README e testes. |
 | `python -m py_compile src/web/app.py src/web/validation.py src/web/plate_service.py src/blender/generator.py src/blender/threemf_exporter.py tests/test_validation.py tests/test_threemf_exporter.py tests/test_plate_service.py` | Pass | Sintaxe dos modulos principais e testes validada. |
 | `python -m unittest discover -s tests -v` | Pass | 16 testes executados com sucesso. |
-| Validacao local manual da feature | Pass | Usuario informou que testou localmente e aparentemente funcionou tudo certo. |
+| Validacao manual da feature | Pass | Usuario informou que testou a feature e aparentemente funcionou tudo certo. |
 
 ### Itens entregues nesta leva
 

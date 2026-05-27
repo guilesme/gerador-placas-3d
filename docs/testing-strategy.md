@@ -68,10 +68,10 @@ Metadata/filament_settings_2.config
 
 ### 4. Teste de integracao com Blender
 
-Rodar em ambiente com Blender instalado ou dentro do Docker:
+Rodar dentro do container Docker, que e o runtime oficial da aplicacao:
 
 ```bash
-blender --background --python src/blender/generator.py -- "Teste" output/test_smoke.3mf 20 CENTER
+docker compose exec app blender --background --python src/blender/generator.py -- "Teste" output/test_smoke.3mf 20 CENTER
 ```
 
 Validar:
@@ -128,7 +128,7 @@ docker compose up
 | Texto longo | 120+ caracteres | warning ou auto-scale |
 | HTML no texto | `<b>Teste</b>` | aparece como texto literal no preview |
 | Ampersand | `A & B` | preview correto e XML valido |
-| Blender ausente | `BLENDER_PATH` invalido | erro amigavel |
+| Blender indisponivel no container | `BLENDER_PATH` invalido no ambiente Docker | erro amigavel |
 | Alinhamento esquerdo | `Linha 1\nLinha 2` | linhas alinhadas a esquerda |
 
 ## Quando Adicionar Teste
@@ -149,6 +149,6 @@ Adicionar teste quando:
 | Documentacao | leitura/revisao + links funcionando |
 | UI | teste manual + screenshot se possivel |
 | Validacao | teste unitario |
-| Subprocesso Blender | teste com mock + teste manual |
+| Subprocesso Blender | teste com mock + teste manual no Docker |
 | Exportador 3MF | teste unitario + parse XML + smoke ZIP |
-| Geometria Blender | geracao real + importacao no Bambu Studio |
+| Geometria Blender | geracao real no Docker + importacao no Bambu Studio |
