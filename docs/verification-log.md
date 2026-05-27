@@ -84,3 +84,20 @@ Branch: `codex/plate-height-options`
 
 - `IMP-004`: selecao entre placa padrao `200 x 180mm` e reduzida `200 x 128mm`.
 - Runtime mantido alinhado ao Docker: `BLENDER_PATH` quando definido e fallback `blender` no proprio ambiente de execucao.
+
+## 2026-05-27 - Perfis Bambu `IMP-003`
+
+Branch: `codex/imp-003-bambu-material-profile`
+
+### Validacoes executadas
+
+| Validacao | Status | Observacao |
+|---|---|---|
+| `python -m py_compile src/web/app.py src/web/validation.py src/web/plate_service.py src/blender/generator.py src/blender/threemf_exporter.py tests/test_validation.py tests/test_threemf_exporter.py tests/test_plate_service.py` | Pass | Sintaxe dos modulos principais e testes validada. |
+| `python -m unittest discover -s tests -v` | Pass | 17 testes executados com sucesso, incluindo perfis PETG no exportador 3MF. |
+| Gerar novo `.3mf` no Docker e abrir no Bambu Studio | Pending | Necessario para marcar `IMP-003` como `Verified`. |
+
+### Itens entregues nesta leva
+
+- `IMP-003`: perfis PETG marrom/branco padronizados em `Metadata/filament_settings_1.config` e `Metadata/filament_settings_2.config`.
+- `model_settings.config` mantem `Placa` no extruder 1 e `Texto` no extruder 2.

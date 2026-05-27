@@ -80,11 +80,24 @@ class ThreeMfExporterTests(unittest.TestCase):
         self.assertIn('Texto <Especial> & "Teste"', metadata_values)
 
     def test_filament_settings_are_valid_json(self):
-        data = json.loads(threemf_exporter.build_filament_settings(1, "#8B4513", "PLA Brown"))
+        data = json.loads(threemf_exporter.build_filament_settings(1))
 
-        self.assertEqual(data["name"], "PLA Brown")
+        self.assertEqual(data["name"], "Voolt3D PETG Premium - Marrom")
         self.assertEqual(data["from"], "project")
-        self.assertIn("#8B4513", data["default_filament_colour"])
+        self.assertEqual(data["filament_type"], ["PETG"])
+        self.assertEqual(data["filament_settings_id"], ["Voolt3D PETG Premium - Marrom"])
+        self.assertEqual(data["default_filament_colour"], ["#804000"])
+        self.assertEqual(data["filament_id"], ["P2ea0049"])
+        self.assertEqual(data["nozzle_temperature"], ["235"])
+
+    def test_second_filament_profile_uses_white_petg(self):
+        data = json.loads(threemf_exporter.build_filament_settings(2))
+
+        self.assertEqual(data["name"], "Voolt3D PETG Premium - White")
+        self.assertEqual(data["filament_type"], ["PETG"])
+        self.assertEqual(data["filament_settings_id"], ["Voolt3D PETG Premium - White"])
+        self.assertEqual(data["default_filament_colour"], ["#FFFFFF"])
+        self.assertEqual(data["filament_id"], ["GFG99"])
 
     def test_export_creates_required_3mf_entries(self):
         objects_data = sample_objects_data()
@@ -110,6 +123,8 @@ class ThreeMfExporterTests(unittest.TestCase):
 
         with zipfile.ZipFile(output_path, "r") as archive:
             entries = set(archive.namelist())
+            filament_1 = json.loads(archive.read("Metadata/filament_settings_1.config"))
+            filament_2 = json.loads(archive.read("Metadata/filament_settings_2.config"))
 
         expected_entries = {
             "[Content_Types].xml",
@@ -122,6 +137,8 @@ class ThreeMfExporterTests(unittest.TestCase):
             "Metadata/filament_settings_2.config",
         }
         self.assertTrue(expected_entries.issubset(entries))
+        self.assertEqual(filament_1["filament_settings_id"], ["Voolt3D PETG Premium - Marrom"])
+        self.assertEqual(filament_2["filament_settings_id"], ["Voolt3D PETG Premium - White"])
 
 
 if __name__ == "__main__":

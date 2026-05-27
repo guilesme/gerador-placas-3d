@@ -5,7 +5,7 @@ Baseado nos arquivos validados pelo usuario:
 - `C:\Users\bigus\Documents\Projetos 3D\Condominio Astro\Utilização da Churrasqueira.3mf`
 - `C:\Users\bigus\Documents\Projetos 3D\Condominio Astro\Placa_Astro_PETG_4h36m.gcode`
 
-Objetivo: servir como referencia para a futura `IMP-003`, que deve padronizar filamentos, cores e vinculo automatico do texto ao segundo material no Bambu Studio.
+Objetivo: servir como referencia para a `IMP-003`, que padroniza filamentos, cores e vinculo do texto ao segundo material no Bambu Studio.
 
 ## Observacao Manual
 
@@ -127,11 +127,11 @@ total filament length [mm] = 27752.84,1297.10
 total filament weight [g] = 84.78,3.96
 ```
 
-## Implementacao Futura Recomendada
+## Implementacao Aplicada
 
 ### Fase 1 - Atualizar metadados de filamento do 3MF
 
-Atualizar `build_filament_settings()` para aceitar perfis configuraveis:
+`build_filament_settings()` passou a usar os perfis padronizados abaixo:
 
 - material 1:
   - nome: `Voolt3D PETG Premium - Marrom`
@@ -144,7 +144,7 @@ Atualizar `build_filament_settings()` para aceitar perfis configuraveis:
 
 ### Fase 2 - Melhorar metadados Bambu
 
-Avaliar se o `.3mf` precisa incluir metadados extras do projeto Bambu para que a lista de filamentos e o vinculo do objeto `Texto` sejam reconhecidos automaticamente sem ajuste manual.
+Validar manualmente se o `.3mf` precisa incluir metadados extras do projeto Bambu para que a lista de filamentos e o vinculo do objeto `Texto` sejam reconhecidos automaticamente sem ajuste manual.
 
 Pontos a investigar:
 
