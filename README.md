@@ -6,9 +6,9 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 
 ## Status
 
-- Versao em desenvolvimento: `0.1.1-dev`
+- Versao em desenvolvimento: `0.2.0-dev`
 - Baseline funcional preservada: `v0.1.0`
-- Branch de estabilidade atual: `codex/v0.1.1-stability`
+- Branch de feature atual: `codex/plate-height-options`
 - Testes automatizados iniciais: `unittest`
 - CI planejado/adicionado: GitHub Actions para compilacao Python e testes unitarios
 
@@ -20,6 +20,7 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 - Separacao de objetos para uso de dois materiais: base e texto.
 - Texto principal com suporte a multiplas linhas.
 - Ajuste de tamanho de fonte e alinhamento.
+- Selecao entre placa padrao `200 x 180 mm` e reduzida `200 x 128 mm`.
 - Rodape fixo da placa.
 - Area de output local para download do arquivo gerado.
 
@@ -31,7 +32,9 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 - Docker / Docker Compose
 - Formato 3MF
 
-## Como Rodar com Docker
+## Como Rodar
+
+O modo recomendado e rodar pelo Docker, porque o Blender usado pela aplicacao fica dentro do container.
 
 ```bash
 docker compose up --build
@@ -44,6 +47,8 @@ http://localhost:8501
 ```
 
 ## Como Rodar Localmente
+
+Use este modo apenas se o Blender tambem estiver instalado no host. Rodar somente o Streamlit fora do container nao usa o Blender instalado no Docker.
 
 Instale as dependencias Python:
 
@@ -68,7 +73,7 @@ streamlit run src/web/app.py
 Validacao de sintaxe:
 
 ```bash
-python -m py_compile src/web/app.py src/web/validation.py src/blender/generator.py src/blender/threemf_exporter.py
+python -m py_compile src/web/app.py src/web/validation.py src/web/plate_service.py src/blender/generator.py src/blender/threemf_exporter.py
 ```
 
 Testes automatizados:
@@ -91,6 +96,7 @@ src/
     threemf_exporter.py
   web/
     app.py
+    plate_service.py
     validation.py
 tests/
 docs/
@@ -123,16 +129,15 @@ v0.1.0
 Proxima versao planejada:
 
 ```text
-v0.1.1
+v0.2.0
 ```
 
 ## Roadmap Curto
 
-- Finalizar fixes de estabilidade de `v0.1.1`.
 - Validar fluxo real com Blender.
 - Melhorar README com screenshots.
-- Corrigir divergencias entre `spec.md` e implementacao.
 - Tornar nome do condominio e rodape configuraveis.
+- Padronizar filamentos, cores e vinculo automatico do texto ao segundo material.
 - Expandir testes do exportador 3MF.
 
 ## Licenca

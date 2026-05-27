@@ -1,6 +1,7 @@
 """Service helpers for invoking Blender plate generation."""
 
 import os
+import shutil
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -17,7 +18,20 @@ if not GENERATOR_SCRIPT.exists():
 
 def get_blender_bin():
     """Return the configured Blender executable path."""
-    return os.environ.get("BLENDER_PATH", "blender")
+    configured_path = os.environ.get("BLENDER_PATH")
+    if configured_path:
+        return configured_path
+
+    path_blender = shutil.which("blender")
+    if path_blender:
+        return path_blender
+
+    blender_root = Path(os.environ.get("ProgramFiles", "C:/Program Files")) / "Blender Foundation"
+    candidates = sorted(blender_root.glob("Blender */blender.exe"), reverse=True)
+    if candidates:
+        return str(candidates[0])
+
+    return "blender"
 
 
 def ensure_output_dir():
@@ -25,7 +39,7 @@ def ensure_output_dir():
     OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
 
-def generate_plate(text, font_size, align="CENTER"):
+def generate_plate(text, font_size, align="CENTER", plate_height=180):
     """Run Blender in background mode and return (success, filepath, message)."""
     ensure_output_dir()
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -42,6 +56,7 @@ def generate_plate(text, font_size, align="CENTER"):
         str(output_path),
         str(font_size),
         align,
+        str(plate_height),
     ]
 
     try:

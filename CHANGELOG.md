@@ -13,6 +13,22 @@ O formato segue a ideia de [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ### Added
 
+- Adiciona opcao de tamanho da placa entre padrao `200 x 180 mm` e reduzida `200 x 128 mm`. (`IMP-004`)
+- Adiciona descoberta automatica do Blender instalado no host quando `BLENDER_PATH` nao estiver definido.
+
+### Changed
+
+- Atualiza documentacao publica, especificacao e rastreador para a proxima versao `0.2.0-dev`.
+
+## [0.1.1] - 2026-05-27
+
+### Docs
+
+- Adiciona documentacao de governanca, versionamento, testes, roadmap e release.
+- Adiciona rastreador inicial de bugs e melhorias baseado nas revisoes tecnicas.
+
+### Added
+
 - Extrai validacao de texto para modulo puro `src/web/validation.py`.
 - Extrai chamada ao Blender para modulo puro `src/web/plate_service.py`.
 - Adiciona testes automatizados com `unittest` para validacao de texto e exportador 3MF. (`BUG-011`)

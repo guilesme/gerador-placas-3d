@@ -46,6 +46,29 @@ class PlateServiceTests(unittest.TestCase):
         self.assertIn("stderr log", message)
         self.assertIn("stdout log", message)
 
+    def test_reduced_plate_height_is_passed_to_blender(self):
+        result = plate_service.subprocess.CompletedProcess(
+            args=["blender"],
+            returncode=1,
+            stdout="stdout log",
+            stderr="stderr log",
+        )
+
+        with mock.patch("subprocess.run", return_value=result) as run:
+            plate_service.generate_plate("Teste", 20, "CENTER", 128)
+
+        cmd = run.call_args.args[0]
+        self.assertEqual(cmd[-2:], ["CENTER", "128"])
+
+    def test_get_blender_bin_uses_blender_path_env(self):
+        with mock.patch.dict("os.environ", {"BLENDER_PATH": "C:/Blender/blender.exe"}):
+            self.assertEqual(plate_service.get_blender_bin(), "C:/Blender/blender.exe")
+
+    def test_get_blender_bin_uses_path_lookup(self):
+        with mock.patch.dict("os.environ", {}, clear=True):
+            with mock.patch("shutil.which", return_value="C:/Tools/blender.exe"):
+                self.assertEqual(plate_service.get_blender_bin(), "C:/Tools/blender.exe")
+
 
 if __name__ == "__main__":
     unittest.main()

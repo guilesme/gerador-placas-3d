@@ -228,9 +228,10 @@ with st.sidebar:
     font_size = st.slider(
         "Tamanho da fonte (mm)",
         min_value=5,
-        max_value=40,
+        max_value=20,
         value=20,
         step=1,
+        key="font_size_mm",
         help="Ajuste o tamanho das letras do texto principal. O rodapé mantém tamanho fixo."
     )
     
@@ -244,6 +245,19 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     
     st.markdown("---")
+
+    # Altura da placa
+    st.markdown("### Tamanho da Placa")
+    plate_size_option = st.radio(
+        "Altura da placa",
+        options=["Padrao (180 mm)", "Reduzida (128 mm)"],
+        index=0,
+        key="plate_height_option",
+        help="Selecione a altura da placa. A largura, espessura, relevo, rodape e cores permanecem iguais."
+    )
+    plate_height = 128 if plate_size_option.startswith("Reduzida") else 180
+
+    st.markdown("---")
     
     # Alinhamento
     st.markdown("### ↔️ Alinhamento do Texto")
@@ -252,6 +266,7 @@ with st.sidebar:
         options=["Centro", "Esquerda"],
         index=0,
         horizontal=True,
+        key="text_align_option",
         label_visibility="collapsed"
     )
     align_map = {"Centro": "CENTER", "Esquerda": "LEFT"}
@@ -266,8 +281,8 @@ with st.sidebar:
     
     # Especificações
     st.markdown("### 📐 Especificações")
-    st.markdown("""
-    - **Placa:** 200 x 180 mm
+    st.markdown(f"""
+    - **Placa:** 200 x {plate_height} mm
     - **Espessura:** 2 mm
     - **Relevo:** 0.7 mm
     - **Rodapé:** 8 mm (fixo)
@@ -356,7 +371,7 @@ with col_btn2:
 # Processamento
 if generate_btn and text_input.strip():
     with st.spinner("⏳ Gerando modelo 3D... Aguarde, isso pode levar ate 2 minutos."):
-        success, filepath, msg = generate_plate(text_input.strip(), font_size, text_align)
+        success, filepath, msg = generate_plate(text_input.strip(), font_size, text_align, plate_height)
         
         if success:
             st.markdown("""
