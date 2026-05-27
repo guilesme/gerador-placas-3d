@@ -146,6 +146,12 @@ total filament weight [g] = 84.78,3.96
 
 Validar manualmente se o `.3mf` precisa incluir metadados extras do projeto Bambu para que a lista de filamentos e o vinculo do objeto `Texto` sejam reconhecidos automaticamente sem ajuste manual.
 
+Resultado observado apos `IMP-003`:
+
+- os filamentos nao abriram selecionados corretamente no Bambu Studio;
+- a selecao manual foi simples;
+- todo o restante do projeto ja apareceu configurado/preenchido.
+
 Pontos a investigar:
 
 - se `Metadata/filament_settings_*.config` precisa espelhar mais campos do G-code;

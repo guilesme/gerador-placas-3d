@@ -95,9 +95,11 @@ Branch: `codex/imp-003-bambu-material-profile`
 |---|---|---|
 | `python -m py_compile src/web/app.py src/web/validation.py src/web/plate_service.py src/blender/generator.py src/blender/threemf_exporter.py tests/test_validation.py tests/test_threemf_exporter.py tests/test_plate_service.py` | Pass | Sintaxe dos modulos principais e testes validada. |
 | `python -m unittest discover -s tests -v` | Pass | 17 testes executados com sucesso, incluindo perfis PETG no exportador 3MF. |
-| Gerar novo `.3mf` no Docker e abrir no Bambu Studio | Pending | Necessario para marcar `IMP-003` como `Verified`. |
+| Gerar novo `.3mf` no Docker e abrir no Bambu Studio | Pass parcial | Arquivo abriu; filamentos nao vieram selecionados corretamente, mas o restante ficou configurado/preenchido e a selecao manual foi simples. |
 
 ### Itens entregues nesta leva
 
 - `IMP-003`: perfis PETG marrom/branco padronizados em `Metadata/filament_settings_1.config` e `Metadata/filament_settings_2.config`.
 - `model_settings.config` mantem `Placa` no extruder 1 e `Texto` no extruder 2.
+- `IMP-003` permanece como `Fixed`, nao `Verified`, porque o preenchimento automatico dos filamentos ainda precisa de investigacao adicional.
+- `IMP-005` criado para rastrear a investigacao dos metadados extras do Bambu Studio.
