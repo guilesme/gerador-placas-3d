@@ -58,7 +58,21 @@ class PlateServiceTests(unittest.TestCase):
             plate_service.generate_plate("Teste", 20, "CENTER", 128)
 
         cmd = run.call_args.args[0]
-        self.assertEqual(cmd[-2:], ["CENTER", "128"])
+        self.assertEqual(cmd[-3:-1], ["CENTER", "128"])
+
+    def test_footer_text_is_passed_to_blender(self):
+        result = plate_service.subprocess.CompletedProcess(
+            args=["blender"],
+            returncode=1,
+            stdout="stdout log",
+            stderr="stderr log",
+        )
+
+        with mock.patch("subprocess.run", return_value=result) as run:
+            plate_service.generate_plate("Teste", 20, "CENTER", 180, "Residencial Teste")
+
+        cmd = run.call_args.args[0]
+        self.assertEqual(cmd[-1], "Residencial Teste")
 
     def test_get_blender_bin_uses_blender_path_env(self):
         with mock.patch.dict("os.environ", {"BLENDER_PATH": "/opt/blender/blender"}):

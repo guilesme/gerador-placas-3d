@@ -8,7 +8,7 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 
 - Versao em desenvolvimento: `0.2.0-dev`
 - Baseline funcional preservada: `v0.1.0`
-- Branch de feature atual: `codex/plate-height-options`
+- Branch de feature atual: `codex/imp-001-rodape-configuravel`
 - Testes automatizados iniciais: `unittest`
 - CI planejado/adicionado: GitHub Actions para compilacao Python e testes unitarios
 
@@ -21,7 +21,7 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 - Texto principal com suporte a multiplas linhas.
 - Ajuste de tamanho de fonte e alinhamento.
 - Selecao entre placa padrao `200 x 180 mm` e reduzida `200 x 128 mm`.
-- Rodape fixo da placa.
+- Rodape configuravel da placa.
 - Area de output da aplicacao para download do arquivo gerado.
 
 ## Stack
@@ -118,7 +118,6 @@ v0.2.0
 
 - Validar fluxo real com Blender.
 - Melhorar README com screenshots.
-- Tornar nome do condominio e rodape configuraveis.
 - Padronizar filamentos, cores e vinculo automatico do texto ao segundo material.
 - Expandir testes do exportador 3MF.
 

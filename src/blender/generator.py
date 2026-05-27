@@ -32,7 +32,7 @@ DEFAULT_FONT_SIZE = 20.0
 MIN_FONT_SIZE = 5.0
 
 # Rodapé
-FOOTER_TEXT = "Condomínio Astro"
+DEFAULT_FOOTER_TEXT = os.environ.get("CONDO_NAME", "Condominio Astro")
 FOOTER_FONT_SIZE = 8.0
 FOOTER_MARGIN_X = 15.0
 FOOTER_MARGIN_Y = 12.0
@@ -59,6 +59,15 @@ def normalize_plate_height(value):
     if abs(height - REDUCED_PLATE_HEIGHT) < 0.01:
         return REDUCED_PLATE_HEIGHT
     return DEFAULT_PLATE_HEIGHT
+
+
+def normalize_footer_text(value):
+    """Return a non-empty footer text."""
+    if value is None:
+        return DEFAULT_FOOTER_TEXT
+
+    text = str(value).strip()
+    return text if text else DEFAULT_FOOTER_TEXT
 
 
 def clear_scene():
@@ -253,9 +262,10 @@ def calculate_font_size(text, font, plate_height=DEFAULT_PLATE_HEIGHT):
     return size, best_text
 
 
-def generate_plate(text, output_path, custom_font_size=None, align='CENTER', plate_height=DEFAULT_PLATE_HEIGHT):
+def generate_plate(text, output_path, custom_font_size=None, align='CENTER', plate_height=DEFAULT_PLATE_HEIGHT, footer_text=DEFAULT_FOOTER_TEXT):
     """Função principal de geração"""
     plate_height = normalize_plate_height(plate_height)
+    footer_text = normalize_footer_text(footer_text)
     log("=" * 50)
     log("INICIANDO GERAÇÃO DE PLACA")
     log("=" * 50)
@@ -263,6 +273,7 @@ def generate_plate(text, output_path, custom_font_size=None, align='CENTER', pla
     log(f"Output: {output_path}")
     log(f"Fonte customizada: {custom_font_size}")
     log(f"Altura da placa: {plate_height}mm")
+    log(f"Rodape: {footer_text}")
     
     clear_scene()
     
@@ -302,7 +313,7 @@ def generate_plate(text, output_path, custom_font_size=None, align='CENTER', pla
     # 4. Criar rodapé
     footer_x = -PLATE_WIDTH/2 + FOOTER_MARGIN_X
     footer_y = -plate_height/2 + FOOTER_MARGIN_Y
-    footer = create_solid_text(FOOTER_TEXT, FOOTER_FONT_SIZE, 
+    footer = create_solid_text(footer_text, FOOTER_FONT_SIZE, 
                                (footer_x, footer_y), 
                                align='LEFT', name="Rodape")
     text_objects.append(footer)
@@ -370,7 +381,7 @@ def main():
         argv = argv[argv.index('--') + 1:]
     
     if len(argv) < 1:
-        print("Uso: blender --background --python generator.py -- 'TEXTO' output.3mf [font_size] [align] [plate_height]")
+        print("Uso: blender --background --python generator.py -- 'TEXTO' output.3mf [font_size] [align] [plate_height] [footer_text]")
         sys.exit(1)
     
     text = argv[0]
@@ -393,9 +404,13 @@ def main():
     plate_height = DEFAULT_PLATE_HEIGHT
     if len(argv) > 4:
         plate_height = normalize_plate_height(argv[4])
+
+    footer_text = DEFAULT_FOOTER_TEXT
+    if len(argv) > 5:
+        footer_text = normalize_footer_text(argv[5])
     
     try:
-        result = generate_plate(text, output, custom_font_size, align, plate_height)
+        result = generate_plate(text, output, custom_font_size, align, plate_height, footer_text)
         sys.exit(0 if result else 1)
     except Exception as e:
         import traceback
