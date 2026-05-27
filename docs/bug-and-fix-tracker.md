@@ -38,6 +38,7 @@ Severidade:
 | IMP-002 | Low | Planned | Performance | Avaliar busca binaria em `calculate_font_size()` | Plano LLM | v0.2.0 |
 | IMP-003 | Medium | Fixed | 3MF/Bambu | Padronizar filamentos, cores e vinculo automatico do texto ao segundo material | Validacao manual | v0.2.0 |
 | IMP-004 | Medium | Verified | Product/Web/Blender | Suportar placa reduzida 200 x 128mm alem da padrao 200 x 180mm | Implementacao urgente | v0.2.0 |
+| IMP-005 | Low | Planned | 3MF/Bambu | Investigar preenchimento automatico dos filamentos no Bambu Studio | Validacao manual | v0.2.x |
 
 ## Detalhamento
 
@@ -207,7 +208,26 @@ Validacao:
 Status de validacao:
 
 - testes automatizados validam JSON dos dois perfis e presenca dos arquivos no ZIP `.3mf`;
-- validacao manual no Bambu Studio ainda pendente apos gerar novo arquivo com esta versao.
+- validacao manual no Bambu Studio foi parcial: o arquivo abriu e o restante do projeto ficou configurado/preenchido, mas os filamentos ainda nao abriram selecionados corretamente;
+- como a selecao manual dos filamentos foi simples, o fluxo atual segue utilizavel;
+- investigacao de metadados extras para preenchimento automatico foi separada em `IMP-005`.
+
+### IMP-005 - Investigar preenchimento automatico dos filamentos no Bambu Studio
+
+Contexto: apos `IMP-003`, o `.3mf` gerado ja possui arquivos `Metadata/filament_settings_1.config` e `Metadata/filament_settings_2.config` com perfis PETG padronizados, mas o Bambu Studio ainda nao abriu com os filamentos corretos automaticamente.
+
+Observacao de validacao:
+
+- usuario informou que os filamentos nao abriram corretos automaticamente;
+- a selecao manual foi simples;
+- todo o restante ja apareceu configurado/preenchido.
+
+Proximas hipoteses:
+
+- comparar um `.3mf` salvo pelo Bambu Studio depois da selecao manual com o `.3mf` gerado pela aplicacao;
+- identificar arquivos extras ou chaves adicionais em `Metadata/model_settings.config`;
+- verificar se o Bambu usa IDs internos de presets, AMS ou cache local alem dos `filament_settings_*.config`;
+- decidir se vale automatizar esse ultimo detalhe ou manter como ajuste manual aceitavel.
 
 ### IMP-004 - Suportar placa reduzida 200 x 128mm
 

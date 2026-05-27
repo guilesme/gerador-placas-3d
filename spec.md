@@ -101,9 +101,9 @@ Validacao manual atual:
 - o arquivo `.3mf` abre no Bambu Studio;
 - a geometria aparece corretamente;
 - testes automatizados confirmam que os dois arquivos `filament_settings_*.config` usam os perfis PETG padronizados;
-- ainda falta validar manualmente no Bambu Studio se um novo arquivo gerado ja abre sem ajuste manual de filamento/material.
+- validacao manual apos `IMP-003` mostrou que os filamentos ainda nao abriram selecionados corretamente, mas a selecao manual foi simples e o restante ja ficou configurado/preenchido.
 
-Essa padronizacao de filamentos e vinculo automatico esta registrada como `IMP-003`.
+Essa padronizacao de filamentos esta registrada como `IMP-003`; a investigacao do preenchimento automatico dos filamentos no Bambu Studio foi separada em `IMP-005`.
 
 ## 8. Saida
 
