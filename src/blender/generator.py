@@ -12,7 +12,9 @@ from mathutils import Vector
 
 # --- CONSTANTES ---
 PLATE_WIDTH = 200.0
-PLATE_HEIGHT = 180.0
+DEFAULT_PLATE_HEIGHT = 180.0
+REDUCED_PLATE_HEIGHT = 128.0
+PLATE_HEIGHT = DEFAULT_PLATE_HEIGHT
 PLATE_DEPTH = 2.0
 CORNER_CUT = 42.48
 
@@ -26,7 +28,6 @@ TEXT_HEIGHT = Z_TEXT_TOP - Z_TEXT_BASE  # 0.7mm
 MARGIN_X = 20.0
 MARGIN_Y = 30.0
 MAX_TEXT_WIDTH = PLATE_WIDTH - (MARGIN_X * 2)
-MAX_TEXT_HEIGHT = PLATE_HEIGHT - (MARGIN_Y * 2) - 20  # Espaço para rodapé
 DEFAULT_FONT_SIZE = 20.0
 MIN_FONT_SIZE = 5.0
 
@@ -41,6 +42,23 @@ DEBUG = os.environ.get("LOG_LEVEL", "INFO").upper() == "DEBUG"
 def log(msg):
     if DEBUG:
         print(f"[GEN] {msg}")
+
+
+def get_max_text_height(plate_height):
+    """Return vertical space available for the main text."""
+    return plate_height - (MARGIN_Y * 2) - 20
+
+
+def normalize_plate_height(value):
+    """Allow only the official plate heights."""
+    try:
+        height = float(value)
+    except (TypeError, ValueError):
+        return DEFAULT_PLATE_HEIGHT
+
+    if abs(height - REDUCED_PLATE_HEIGHT) < 0.01:
+        return REDUCED_PLATE_HEIGHT
+    return DEFAULT_PLATE_HEIGHT
 
 
 def clear_scene():
@@ -72,12 +90,12 @@ def get_font():
     return None
 
 
-def create_plate():
+def create_plate(plate_height=DEFAULT_PLATE_HEIGHT):
     """Cria placa base como mesh sólido com chanfro"""
-    log(f"Criando placa {PLATE_WIDTH}x{PLATE_HEIGHT}x{PLATE_DEPTH}mm")
+    log(f"Criando placa {PLATE_WIDTH}x{plate_height}x{PLATE_DEPTH}mm")
     
     half_w = PLATE_WIDTH / 2
-    half_h = PLATE_HEIGHT / 2
+    half_h = plate_height / 2
     
     # Vértices do pentágono (base e topo)
     verts = [
@@ -209,10 +227,11 @@ def wrap_text_to_fit(text, font, font_size, max_width):
     bpy.data.curves.remove(curve)
     return '\n'.join(wrapped_lines)
 
-def calculate_font_size(text, font):
+def calculate_font_size(text, font, plate_height=DEFAULT_PLATE_HEIGHT):
     """Calcula tamanho de fonte para caber na área, aplicando quebra de texto"""
     size = DEFAULT_FONT_SIZE
     best_text = text
+    max_text_height = get_max_text_height(plate_height)
     
     while size > MIN_FONT_SIZE:
         wrapped_text = wrap_text_to_fit(text, font, size, MAX_TEXT_WIDTH)
@@ -220,7 +239,7 @@ def calculate_font_size(text, font):
         total_height = len(lines) * size * 1.3
         
         # Testa se a altura total não excede o máximo permitido
-        if total_height <= MAX_TEXT_HEIGHT:
+        if total_height <= max_text_height:
             best_text = wrapped_text
             break
             
@@ -234,19 +253,21 @@ def calculate_font_size(text, font):
     return size, best_text
 
 
-def generate_plate(text, output_path, custom_font_size=None, align='CENTER'):
+def generate_plate(text, output_path, custom_font_size=None, align='CENTER', plate_height=DEFAULT_PLATE_HEIGHT):
     """Função principal de geração"""
+    plate_height = normalize_plate_height(plate_height)
     log("=" * 50)
     log("INICIANDO GERAÇÃO DE PLACA")
     log("=" * 50)
     log(f"Texto: {text}")
     log(f"Output: {output_path}")
     log(f"Fonte customizada: {custom_font_size}")
+    log(f"Altura da placa: {plate_height}mm")
     
     clear_scene()
     
     # 1. Criar placa base
-    plate = create_plate()
+    plate = create_plate(plate_height)
     
     # 2. Determinar tamanho de fonte e quebrar o texto
     font = get_font()
@@ -255,7 +276,7 @@ def generate_plate(text, output_path, custom_font_size=None, align='CENTER'):
         log(f"Usando fonte customizada: {font_size}mm")
         text = wrap_text_to_fit(text, font, font_size, MAX_TEXT_WIDTH)
     else:
-        font_size, text = calculate_font_size(text, font)
+        font_size, text = calculate_font_size(text, font, plate_height)
     
     # 3. Criar texto principal (centralizado)
     lines = [l.strip() for l in text.split('\n') if l.strip()]
@@ -280,7 +301,7 @@ def generate_plate(text, output_path, custom_font_size=None, align='CENTER'):
     
     # 4. Criar rodapé
     footer_x = -PLATE_WIDTH/2 + FOOTER_MARGIN_X
-    footer_y = -PLATE_HEIGHT/2 + FOOTER_MARGIN_Y
+    footer_y = -plate_height/2 + FOOTER_MARGIN_Y
     footer = create_solid_text(FOOTER_TEXT, FOOTER_FONT_SIZE, 
                                (footer_x, footer_y), 
                                align='LEFT', name="Rodape")
@@ -349,7 +370,7 @@ def main():
         argv = argv[argv.index('--') + 1:]
     
     if len(argv) < 1:
-        print("Uso: blender --background --python generator.py -- 'TEXTO' output.3mf [font_size]")
+        print("Uso: blender --background --python generator.py -- 'TEXTO' output.3mf [font_size] [align] [plate_height]")
         sys.exit(1)
     
     text = argv[0]
@@ -368,9 +389,13 @@ def main():
     align = 'CENTER'
     if len(argv) > 3:
         align = argv[3]
+
+    plate_height = DEFAULT_PLATE_HEIGHT
+    if len(argv) > 4:
+        plate_height = normalize_plate_height(argv[4])
     
     try:
-        result = generate_plate(text, output, custom_font_size, align)
+        result = generate_plate(text, output, custom_font_size, align, plate_height)
         sys.exit(0 if result else 1)
     except Exception as e:
         import traceback

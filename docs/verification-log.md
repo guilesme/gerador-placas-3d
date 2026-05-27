@@ -42,7 +42,7 @@ v0.1.0
 
 | Validacao | Status | Motivo |
 |---|---|---|
-| Rodar geracao real com Blender local | Blocked | `blender` nao esta disponivel no PATH local desta sessao. |
+| Rodar geracao real no container Docker | Pass | Validado anteriormente com `Portaria Principal`; esse e o unico runtime oficial para geracao. |
 | Testar `BLENDER_PATH` invalido pela UI | Pass | Validado por teste automatizado em `tests/test_plate_service.py`. |
 | Vinculo automatico do texto ao segundo filamento | Pending | Usuario precisou adicionar segunda cor e vincular `Text` manualmente. Registrado como `IMP-003`. |
 
@@ -66,3 +66,21 @@ v0.1.0
 - O `.3mf` gerado em `placa_astro_20260526_065248.3mf` abriu no Bambu Studio.
 - Ajuste manual observado: foi necessario adicionar uma segunda cor/filamento e vincular o objeto `Text` a essa segunda cor.
 - Isso nao bloqueia a geracao atual, mas vira melhoria futura para reduzir configuracao manual no Bambu Studio.
+
+## 2026-05-27 - Feature urgente `v0.2.0-dev`
+
+Branch: `codex/plate-height-options`
+
+### Validacoes executadas
+
+| Validacao | Status | Observacao |
+|---|---|---|
+| Revisao de diff local da feature urgente | Pass | Alteracoes concentradas em UI, servico, gerador Blender, README e testes. |
+| `python -m py_compile src/web/app.py src/web/validation.py src/web/plate_service.py src/blender/generator.py src/blender/threemf_exporter.py tests/test_validation.py tests/test_threemf_exporter.py tests/test_plate_service.py` | Pass | Sintaxe dos modulos principais e testes validada. |
+| `python -m unittest discover -s tests -v` | Pass | 16 testes executados com sucesso. |
+| Validacao manual da feature | Pass | Usuario informou que testou a feature e aparentemente funcionou tudo certo. |
+
+### Itens entregues nesta leva
+
+- `IMP-004`: selecao entre placa padrao `200 x 180mm` e reduzida `200 x 128mm`.
+- Runtime mantido alinhado ao Docker: `BLENDER_PATH` quando definido e fallback `blender` no proprio ambiente de execucao.

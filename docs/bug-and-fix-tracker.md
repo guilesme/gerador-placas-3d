@@ -37,6 +37,7 @@ Severidade:
 | IMP-001 | Medium | Planned | Product | Tornar nome do condominio configuravel | Relatorios + Revisao Codex | v0.2.0 |
 | IMP-002 | Low | Planned | Performance | Avaliar busca binaria em `calculate_font_size()` | Plano LLM | v0.2.0 |
 | IMP-003 | Medium | Planned | 3MF/Bambu | Padronizar filamentos, cores e vinculo automatico do texto ao segundo material | Validacao manual | v0.2.0 |
+| IMP-004 | Medium | Verified | Product/Web/Blender | Suportar placa reduzida 200 x 128mm alem da padrao 200 x 180mm | Implementacao urgente | v0.2.0 |
 
 ## Detalhamento
 
@@ -195,6 +196,25 @@ Validacao:
 - confirmar que ha dois filamentos listados;
 - confirmar que o objeto `Texto` ja esta vinculado ao segundo filamento;
 - confirmar que o slice usa as cores/material slots esperados.
+
+### IMP-004 - Suportar placa reduzida 200 x 128mm
+
+Contexto: foi adicionada uma feature urgente para permitir gerar a placa tambem em altura reduzida, mantendo a largura de 200mm, espessura, relevo, rodape e fluxo de exportacao.
+
+Implementacao:
+
+- UI Streamlit passa a oferecer seletor entre `Padrao (180 mm)` e `Reduzida (128 mm)`;
+- `plate_service.generate_plate()` repassa a altura selecionada para o Blender;
+- `generator.py` aceita `plate_height` pela CLI e normaliza para alturas oficiais;
+- area vertical disponivel para texto passa a ser calculada conforme a altura da placa;
+- runtime oficial permanece Docker; o app usa `BLENDER_PATH` quando definido no container e fallback `blender` dentro do proprio container.
+
+Validacao:
+
+- `python -m py_compile` dos modulos principais e testes;
+- `python -m unittest discover -s tests -v`;
+- teste unitario garante que a altura reduzida e enviada ao comando Blender;
+- validacao manual informada pelo usuario antes do registro.
 
 ## Como Atualizar Este Arquivo
 

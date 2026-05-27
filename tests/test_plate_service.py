@@ -13,7 +13,7 @@ import plate_service
 
 class PlateServiceTests(unittest.TestCase):
     def test_missing_blender_returns_friendly_error(self):
-        with mock.patch.dict("os.environ", {"BLENDER_PATH": "C:/missing/blender.exe"}):
+        with mock.patch.dict("os.environ", {"BLENDER_PATH": "/missing/blender"}):
             with mock.patch("subprocess.run", side_effect=FileNotFoundError):
                 success, filepath, message = plate_service.generate_plate("Teste", 20, "CENTER")
 
@@ -45,6 +45,28 @@ class PlateServiceTests(unittest.TestCase):
         self.assertIsNone(filepath)
         self.assertIn("stderr log", message)
         self.assertIn("stdout log", message)
+
+    def test_reduced_plate_height_is_passed_to_blender(self):
+        result = plate_service.subprocess.CompletedProcess(
+            args=["blender"],
+            returncode=1,
+            stdout="stdout log",
+            stderr="stderr log",
+        )
+
+        with mock.patch("subprocess.run", return_value=result) as run:
+            plate_service.generate_plate("Teste", 20, "CENTER", 128)
+
+        cmd = run.call_args.args[0]
+        self.assertEqual(cmd[-2:], ["CENTER", "128"])
+
+    def test_get_blender_bin_uses_blender_path_env(self):
+        with mock.patch.dict("os.environ", {"BLENDER_PATH": "/opt/blender/blender"}):
+            self.assertEqual(plate_service.get_blender_bin(), "/opt/blender/blender")
+
+    def test_get_blender_bin_defaults_to_blender_command(self):
+        with mock.patch.dict("os.environ", {}, clear=True):
+            self.assertEqual(plate_service.get_blender_bin(), "blender")
 
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@ def ensure_output_dir():
     OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
 
-def generate_plate(text, font_size, align="CENTER"):
+def generate_plate(text, font_size, align="CENTER", plate_height=180):
     """Run Blender in background mode and return (success, filepath, message)."""
     ensure_output_dir()
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -42,6 +42,7 @@ def generate_plate(text, font_size, align="CENTER"):
         str(output_path),
         str(font_size),
         align,
+        str(plate_height),
     ]
 
     try:
@@ -60,7 +61,7 @@ def generate_plate(text, font_size, align="CENTER"):
     except FileNotFoundError:
         return False, None, (
             f"Executavel do Blender nao encontrado: {blender_bin}. "
-            "Verifique o PATH ou defina BLENDER_PATH."
+            "Verifique se o container Docker foi construido corretamente e se BLENDER_PATH esta definido no container."
         )
     except OSError as e:
         return False, None, f"Erro de sistema ao executar o Blender: {e}"

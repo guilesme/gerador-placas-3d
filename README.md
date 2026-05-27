@@ -6,9 +6,9 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 
 ## Status
 
-- Versao em desenvolvimento: `0.1.1-dev`
+- Versao em desenvolvimento: `0.2.0-dev`
 - Baseline funcional preservada: `v0.1.0`
-- Branch de estabilidade atual: `codex/v0.1.1-stability`
+- Branch de feature atual: `codex/plate-height-options`
 - Testes automatizados iniciais: `unittest`
 - CI planejado/adicionado: GitHub Actions para compilacao Python e testes unitarios
 
@@ -20,8 +20,9 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 - Separacao de objetos para uso de dois materiais: base e texto.
 - Texto principal com suporte a multiplas linhas.
 - Ajuste de tamanho de fonte e alinhamento.
+- Selecao entre placa padrao `200 x 180 mm` e reduzida `200 x 128 mm`.
 - Rodape fixo da placa.
-- Area de output local para download do arquivo gerado.
+- Area de output da aplicacao para download do arquivo gerado.
 
 ## Stack
 
@@ -31,7 +32,9 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 - Docker / Docker Compose
 - Formato 3MF
 
-## Como Rodar com Docker
+## Como Rodar
+
+A aplicacao deve ser executada pelo Docker Compose. O Blender faz parte do container e nao deve ser instalado nem descoberto no Windows/host para o fluxo normal.
 
 ```bash
 docker compose up --build
@@ -43,32 +46,16 @@ Depois acesse:
 http://localhost:8501
 ```
 
-## Como Rodar Localmente
+## Desenvolvimento
 
-Instale as dependencias Python:
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-Garanta que o Blender esta instalado e acessivel pelo `PATH`, ou defina:
-
-```bash
-BLENDER_PATH=/caminho/para/blender
-```
-
-Execute:
-
-```bash
-streamlit run src/web/app.py
-```
+Os comandos Python locais sao usados apenas para validacao rapida de sintaxe e testes unitarios que nao dependem do Blender. Para executar a aplicacao completa e gerar `.3mf`, use sempre o Docker Compose.
 
 ## Testes
 
 Validacao de sintaxe:
 
 ```bash
-python -m py_compile src/web/app.py src/web/validation.py src/blender/generator.py src/blender/threemf_exporter.py
+python -m py_compile src/web/app.py src/web/validation.py src/web/plate_service.py src/blender/generator.py src/blender/threemf_exporter.py
 ```
 
 Testes automatizados:
@@ -77,7 +64,7 @@ Testes automatizados:
 python -m unittest discover -s tests -v
 ```
 
-Observacao: os testes atuais nao exigem Blender. A geracao real de `.3mf` ainda deve ser validada manualmente ou em ambiente com Blender instalado.
+Observacao: os testes atuais nao exigem Blender. A geracao real de `.3mf` deve ser validada pelo container Docker.
 
 ## Estrutura
 
@@ -91,6 +78,7 @@ src/
     threemf_exporter.py
   web/
     app.py
+    plate_service.py
     validation.py
 tests/
 docs/
@@ -123,16 +111,15 @@ v0.1.0
 Proxima versao planejada:
 
 ```text
-v0.1.1
+v0.2.0
 ```
 
 ## Roadmap Curto
 
-- Finalizar fixes de estabilidade de `v0.1.1`.
 - Validar fluxo real com Blender.
 - Melhorar README com screenshots.
-- Corrigir divergencias entre `spec.md` e implementacao.
 - Tornar nome do condominio e rodape configuraveis.
+- Padronizar filamentos, cores e vinculo automatico do texto ao segundo material.
 - Expandir testes do exportador 3MF.
 
 ## Licenca

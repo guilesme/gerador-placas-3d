@@ -1,6 +1,6 @@
 # Especificacao Tecnica - Gerador de Placas 3D
 
-Versao da especificacao: `0.1.1-dev`
+Versao da especificacao: `0.2.0-dev`
 
 Esta especificacao descreve o comportamento atual validado da aplicacao. Ela substitui a especificacao inicial gerada durante a fase de prototipo.
 
@@ -17,6 +17,9 @@ O caso de uso atual e a geracao de placas para o Condominio Astro, com base marr
 - Campo de texto via Streamlit.
 - Suporte a multiplas linhas.
 - Controle de tamanho de fonte principal.
+- Controle de tamanho da placa:
+  - padrao: 200 x 180mm;
+  - reduzida: 200 x 128mm.
 - Controle de alinhamento:
   - centro;
   - esquerda;
@@ -40,7 +43,7 @@ Regras atuais:
 | Campo | Valor |
 |---|---:|
 | Largura | 200mm |
-| Altura | 180mm |
+| Altura | 180mm ou 128mm |
 | Espessura | 2mm |
 | Chanfro inferior direito | 42.48mm |
 
@@ -53,12 +56,12 @@ A placa e gerada proceduralmente como malha solida, com corte obliquo na quina i
 | Fonte | Roboto Bold |
 | Tamanho padrao no gerador | 20mm |
 | Tamanho minimo | 5mm |
-| Slider da UI | 5mm a 40mm |
+| Slider da UI | 5mm a 20mm |
 | Largura util | 160mm |
-| Altura util considerada no gerador | 100mm |
+| Altura util considerada no gerador | 100mm na placa 180mm; 48mm na placa 128mm |
 | Altura total do texto 3D | 0.7mm |
 
-Observacao: o slider permite valores acima do padrao para textos curtos. Textos longos ainda precisam de validacao visual, pois tamanho manual alto pode extrapolar a area util.
+Observacao: textos longos ainda precisam de validacao visual, principalmente na placa reduzida, pois a area vertical disponivel e menor.
 
 ## 5. Rodape
 
@@ -158,4 +161,3 @@ Validacoes manuais:
 - baixar `.3mf`;
 - abrir/importar no Bambu Studio;
 - confirmar mapeamento de materiais quando `IMP-003` for implementado.
-
