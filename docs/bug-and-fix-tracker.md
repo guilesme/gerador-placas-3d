@@ -34,7 +34,7 @@ Severidade:
 | BUG-010 | Low | Verified | Docker | `docker-compose.yml` usa `version` deprecated | Relatorio LLM | v0.1.1 |
 | BUG-011 | Medium | Verified | Tests | Projeto nao possui testes automatizados | Relatorios + Revisao Codex | v0.1.2 |
 | BUG-012 | Low | Verified | Docs | Documentos aparentam mojibake/encoding quebrado no ambiente atual | Revisao Codex | v0.1.1 |
-| IMP-001 | Medium | Fixed | Product | Tornar nome do condominio configuravel | Relatorios + Revisao Codex | v0.2.0 |
+| IMP-001 | Medium | Verified | Product | Tornar nome do condominio configuravel | Relatorios + Revisao Codex | v0.2.0 |
 | IMP-002 | Low | Planned | Performance | Avaliar busca binaria em `calculate_font_size()` | Plano LLM | v0.2.0 |
 | IMP-003 | Medium | Fixed | 3MF/Bambu | Padronizar filamentos, cores e vinculo automatico do texto ao segundo material | Validacao manual | v0.2.0 |
 | IMP-004 | Medium | Verified | Product/Web/Blender | Suportar placa reduzida 200 x 128mm alem da padrao 200 x 180mm | Implementacao urgente | v0.2.0 |
@@ -191,7 +191,7 @@ Validacao:
 - teste unitario garante que o texto do rodape e enviado ao comando Blender;
 - `python -m py_compile`;
 - `python -m unittest discover -s tests -v`;
-- validacao manual no Docker ainda recomendada antes de marcar como `Verified`.
+- validacao manual no Docker aprovada pelo usuario; rodape configuravel aparentemente funcionando corretamente.
 
 ### IMP-003 - Padronizar filamentos, cores e vinculo do texto
 
