@@ -20,6 +20,7 @@ O objetivo e manter a aplicacao evoluindo de forma profissional, com rastreabili
 - [Estrategia de Testes](testing-strategy.md)
 - [Log de Verificacao](verification-log.md)
 - [Roadmap](roadmap.md)
+- [Backlog de Proximas Sprints](sprint-backlog.md)
 - [Visibilidade no GitHub](github-visibility.md)
 - [Referencia de Materiais e Perfil Bambu](material-profile-reference.md)
 - [Checklist de Release](release-checklist.md)

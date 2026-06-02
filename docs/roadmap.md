@@ -2,6 +2,8 @@
 
 Este roadmap organiza a evolucao do projeto em fases pequenas e recuperaveis.
 
+Para execucao pratica das proximas iteracoes, consulte tambem o [Backlog de Proximas Sprints](sprint-backlog.md).
+
 ## Fase 0 - Governanca e Baseline
 
 Objetivo: documentar o processo antes de alterar comportamento.
@@ -84,6 +86,7 @@ Objetivo: melhorar confiabilidade do arquivo gerado e experiencia do usuario.
 
 Itens:
 
+- `IMP-005`: investigar preenchimento automatico dos filamentos no Bambu Studio;
 - validar `.3mf` gerado automaticamente;
 - melhorar mensagens de erro do Blender;
 - adicionar logs baixaveis;
