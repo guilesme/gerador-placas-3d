@@ -38,7 +38,7 @@ Severidade:
 | IMP-002 | Low | Planned | Performance | Avaliar busca binaria em `calculate_font_size()` | Plano LLM | v0.2.0 |
 | IMP-003 | Medium | Fixed | 3MF/Bambu | Padronizar filamentos, cores e vinculo automatico do texto ao segundo material | Validacao manual | v0.2.0 |
 | IMP-004 | Medium | Verified | Product/Web/Blender | Suportar placa reduzida 200 x 128mm alem da padrao 200 x 180mm | Implementacao urgente | v0.2.0 |
-| IMP-005 | Low | Planned | 3MF/Bambu | Investigar preenchimento automatico dos filamentos no Bambu Studio | Validacao manual | v0.2.x |
+| IMP-005 | Low | In progress | 3MF/Bambu | Migrar os perfis para `project_settings.config` e validar abertura no Bambu Studio | Validação manual | v0.2.x |
 | IMP-006 | Medium | Verified | Web/Blender | Permitir fonte principal de ate 40 mm | Solicitacao urgente do usuario | v0.2.0 |
 
 ## Detalhamento
@@ -235,7 +235,7 @@ Status de validacao:
 
 ### IMP-005 - Investigar preenchimento automatico dos filamentos no Bambu Studio
 
-Contexto: apos `IMP-003`, o `.3mf` gerado ja possui arquivos `Metadata/filament_settings_1.config` e `Metadata/filament_settings_2.config` com perfis PETG padronizados, mas o Bambu Studio ainda nao abriu com os filamentos corretos automaticamente.
+Contexto: após `IMP-003`, os arquivos separados `Metadata/filament_settings_*.config` com perfis PETG padronizados fizeram o Bambu Studio reportar configuração inválida. Um `.3mf` salvo pelo Bambu Studio confirmou que os perfis atuais devem estar reunidos em `Metadata/project_settings.config`.
 
 Observacao de validacao:
 
@@ -246,8 +246,9 @@ Observacao de validacao:
 Proximas hipoteses:
 
 - comparar um `.3mf` salvo pelo Bambu Studio depois da selecao manual com o `.3mf` gerado pela aplicacao;
+- abrir uma placa gerada depois da migração para confirmar que a configuração é aceita sem o alerta;
 - identificar arquivos extras ou chaves adicionais em `Metadata/model_settings.config`;
-- verificar se o Bambu usa IDs internos de presets, AMS ou cache local alem dos `filament_settings_*.config`;
+- verificar se o Bambu usa IDs internos de presets, AMS ou cache local além de `project_settings.config`;
 - decidir se vale automatizar esse ultimo detalhe ou manter como ajuste manual aceitavel.
 
 ### IMP-004 - Suportar placa reduzida 200 x 128mm

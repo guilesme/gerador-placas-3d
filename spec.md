@@ -99,12 +99,11 @@ Cores pretendidas:
 
 Validacao manual atual:
 
-- o arquivo `.3mf` abre no Bambu Studio;
-- a geometria aparece corretamente;
-- testes automatizados confirmam que os dois arquivos `filament_settings_*.config` usam os perfis PETG padronizados;
-- validacao manual apos `IMP-003` mostrou que os filamentos ainda nao abriram selecionados corretamente, mas a selecao manual foi simples e o restante ja ficou configurado/preenchido.
+- testes automatizados confirmam que `Metadata/project_settings.config` contém os dois perfis PETG padronizados e que os arquivos legados `filament_settings_*.config` não são emitidos;
+- a abertura de um arquivo novo no Bambu Studio, sem salvá-lo antes, precisa confirmar que não há alerta de configuração inválida;
+- a geometria deve aparecer corretamente, com a placa no material 1 e o texto no material 2.
 
-Essa padronizacao de filamentos esta registrada como `IMP-003`; a investigacao do preenchimento automatico dos filamentos no Bambu Studio foi separada em `IMP-005`.
+Essa padronização de filamentos está registrada como `IMP-003`; a migração para a configuração de projeto do Bambu Studio e sua validação manual estão registradas como `IMP-005`.
 
 ## 8. Saida
 

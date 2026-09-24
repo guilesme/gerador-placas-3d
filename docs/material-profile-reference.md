@@ -4,6 +4,7 @@ Baseado nos arquivos validados pelo usuario:
 
 - `C:\Users\bigus\Documents\Projetos 3D\Condominio Astro\Utilização da Churrasqueira.3mf`
 - `C:\Users\bigus\Documents\Projetos 3D\Condominio Astro\Placa_Astro_PETG_4h36m.gcode`
+- `C:\Users\bigus\Downloads\placa_astro_20260924_131042.3mf` (salvo novamente pelo Bambu Studio)
 
 Objetivo: servir como referencia para a `IMP-003`, que padroniza filamentos, cores e vinculo do texto ao segundo material no Bambu Studio.
 
@@ -131,7 +132,7 @@ total filament weight [g] = 84.78,3.96
 
 ### Fase 1 - Atualizar metadados de filamento do 3MF
 
-`build_filament_settings()` passou a usar os perfis padronizados abaixo:
+Os perfis padronizados usados pela aplicação são:
 
 - material 1:
   - nome: `Voolt3D PETG Premium - Marrom`
@@ -142,9 +143,13 @@ total filament weight [g] = 84.78,3.96
   - cor: `#FFFFFF`
   - tipo: `PETG`
 
-### Fase 2 - Melhorar metadados Bambu
+### Fase 2 - Configuração de projeto do Bambu Studio
 
-Validar manualmente se o `.3mf` precisa incluir metadados extras do projeto Bambu para que a lista de filamentos e o vinculo do objeto `Texto` sejam reconhecidos automaticamente sem ajuste manual.
+O arquivo salvo pelo Bambu Studio confirmou que a versão atual armazena os materiais em um único `Metadata/project_settings.config`. Por isso, o exportador passou a gerar esse arquivo, com o contexto `Bambu Lab A1 0.4 nozzle`, os IDs dos dois filamentos Voolt e os valores de temperatura, cor e fluxo por material.
+
+Os arquivos legados `Metadata/filament_settings_1.config` e `Metadata/filament_settings_2.config` não são mais gravados. Eles eram a fonte do alerta de configuração inválida exibido pelo Bambu Studio.
+
+O pacote mantém `Metadata/model_settings.config`, que preserva a associação `Placa -> extruder 1` e `Texto -> extruder 2`.
 
 Resultado observado apos `IMP-003`:
 
@@ -152,11 +157,7 @@ Resultado observado apos `IMP-003`:
 - a selecao manual foi simples;
 - todo o restante do projeto ja apareceu configurado/preenchido.
 
-Pontos a investigar:
-
-- se `Metadata/filament_settings_*.config` precisa espelhar mais campos do G-code;
-- se `Metadata/model_settings.config` precisa de metadados adicionais por `part`;
-- se ha arquivos extras em `.3mf` salvo pelo Bambu Studio apos ajuste manual.
+Validação pendente: abrir uma placa nova, sem salvá-la previamente, no Bambu Studio e confirmar que não aparece o alerta de configuração inválida e que os dois materiais são reconhecidos.
 
 ### Fase 3 - Teste de aceitacao
 

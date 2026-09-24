@@ -233,39 +233,67 @@ def build_model_rels(objects_file):
 </Relationships>'''
 
 
-def get_filament_profile(extruder):
-    return BAMBU_FILAMENT_PROFILES.get(int(extruder), BAMBU_FILAMENT_PROFILES[1])
+def build_project_settings():
+    """Gera a configuração de projeto esperada pelo Bambu Studio atual.
 
+    Perfis de filamento são propriedades do projeto, não arquivos de perfil
+    independentes. Essa estrutura segue um 3MF salvo pelo Bambu Studio para a
+    A1 com bico de 0,4 mm e mantém as identificações dos materiais Voolt.
+    """
+    profiles = [BAMBU_FILAMENT_PROFILES[index] for index in sorted(BAMBU_FILAMENT_PROFILES)]
 
-def build_filament_settings(extruder, color=None, name=None):
-    profile = dict(get_filament_profile(extruder))
-    if color is not None:
-        profile["color"] = color
-    if name is not None:
-        profile["name"] = name
+    def values(key):
+        return [profile[key] for profile in profiles]
 
     return json.dumps({
-        "cool_plate_temp": [profile["cool_plate_temp"]],
-        "cool_plate_temp_initial_layer": [profile["cool_plate_temp_initial_layer"]],
-        "default_filament_colour": [profile["color"]],
-        "filament_colour": [profile["color"]],
-        "filament_density": [profile["density"]],
-        "filament_diameter": [profile["diameter"]],
-        "filament_flow_ratio": [profile["flow_ratio"]],
-        "filament_id": [profile["filament_id"]],
-        "filament_max_volumetric_speed": [profile["max_volumetric_speed"]],
-        "filament_settings_id": [profile["name"]],
-        "filament_type": [profile["type"]],
-        "filament_vendor": [profile["vendor"]],
         "from": "project",
-        "hot_plate_temp": [profile["hot_plate_temp"]],
-        "hot_plate_temp_initial_layer": [profile["hot_plate_temp_initial_layer"]],
-        "name": profile["name"],
-        "nozzle_temperature": [profile["nozzle_temperature"]],
-        "nozzle_temperature_initial_layer": [profile["nozzle_temperature_initial_layer"]],
-        "textured_plate_temp": [profile["textured_plate_temp"]],
-        "textured_plate_temp_initial_layer": [profile["textured_plate_temp_initial_layer"]],
-        "version": "2.3.0.70"
+        "name": "project_settings",
+        "version": "02.08.02.61",
+        "printer_model": "Bambu Lab A1",
+        "printer_settings_id": "Bambu Lab A1 0.4 nozzle",
+        "printer_technology": "FFF",
+        "printer_variant": "0.4",
+        "nozzle_diameter": ["0.4"],
+        "curr_bed_type": "Cool Plate",
+        "default_print_profile": "0.20mm Standard @BBL A1",
+        "print_settings_id": "0.12mm - PETG Placas",
+        "default_filament_profile": values("name"),
+        "default_filament_colour": values("color"),
+        "filament_colour": values("color"),
+        "filament_ids": values("filament_id"),
+        "filament_settings_id": values("name"),
+        "filament_type": values("type"),
+        "filament_vendor": values("vendor"),
+        "filament_density": values("density"),
+        "filament_diameter": values("diameter"),
+        "filament_flow_ratio": values("flow_ratio"),
+        "filament_max_volumetric_speed": values("max_volumetric_speed"),
+        "nozzle_temperature": values("nozzle_temperature"),
+        "nozzle_temperature_initial_layer": values("nozzle_temperature_initial_layer"),
+        "cool_plate_temp": values("cool_plate_temp"),
+        "cool_plate_temp_initial_layer": values("cool_plate_temp_initial_layer"),
+        "hot_plate_temp": values("hot_plate_temp"),
+        "hot_plate_temp_initial_layer": values("hot_plate_temp_initial_layer"),
+        "textured_plate_temp": values("textured_plate_temp"),
+        "textured_plate_temp_initial_layer": values("textured_plate_temp_initial_layer"),
+        "filament_printable": ["3", "3"],
+        "filament_is_support": ["0", "0"],
+        "filament_map": ["1", "1"],
+        "filament_map_mode": "Auto For Flush",
+        "filament_volume_map": ["0", "0"],
+        "filament_self_index": ["1", "2"],
+        "filament_extruder_compatibility": ["0", "0"],
+        "flush_volumes_matrix": ["0", "596", "243", "0"],
+        "flush_volumes_vector": ["140", "140", "140", "140"],
+        "enable_prime_tower": "1",
+        "different_settings_to_system": [
+            "filament_colour",
+            "filament_ids",
+            "filament_settings_id",
+            "filament_vendor",
+            "filament_type",
+            "nozzle_temperature",
+        ],
     }, indent=4)
 
 
@@ -315,8 +343,7 @@ def export(filepath, objects):
         
         # Metadata
         zf.writestr('Metadata/model_settings.config', build_model_settings(objects_data, assembly_id))
-        zf.writestr('Metadata/filament_settings_1.config', build_filament_settings(1))
-        zf.writestr('Metadata/filament_settings_2.config', build_filament_settings(2))
+        zf.writestr('Metadata/project_settings.config', build_project_settings())
     
     log(f"Arquivo: {os.path.getsize(filepath)} bytes")
     log("=== CONCLUÍDO ===")

@@ -79,25 +79,21 @@ class ThreeMfExporterTests(unittest.TestCase):
         ]
         self.assertIn('Texto <Especial> & "Teste"', metadata_values)
 
-    def test_filament_settings_are_valid_json(self):
-        data = json.loads(threemf_exporter.build_filament_settings(1))
+    def test_project_settings_are_valid_json(self):
+        data = json.loads(threemf_exporter.build_project_settings())
 
-        self.assertEqual(data["name"], "Voolt3D PETG Premium - Marrom")
+        self.assertEqual(data["name"], "project_settings")
         self.assertEqual(data["from"], "project")
-        self.assertEqual(data["filament_type"], ["PETG"])
-        self.assertEqual(data["filament_settings_id"], ["Voolt3D PETG Premium - Marrom"])
-        self.assertEqual(data["default_filament_colour"], ["#804000"])
-        self.assertEqual(data["filament_id"], ["P2ea0049"])
-        self.assertEqual(data["nozzle_temperature"], ["235"])
-
-    def test_second_filament_profile_uses_white_petg(self):
-        data = json.loads(threemf_exporter.build_filament_settings(2))
-
-        self.assertEqual(data["name"], "Voolt3D PETG Premium - White")
-        self.assertEqual(data["filament_type"], ["PETG"])
-        self.assertEqual(data["filament_settings_id"], ["Voolt3D PETG Premium - White"])
-        self.assertEqual(data["default_filament_colour"], ["#FFFFFF"])
-        self.assertEqual(data["filament_id"], ["GFG99"])
+        self.assertEqual(data["printer_model"], "Bambu Lab A1")
+        self.assertEqual(data["filament_type"], ["PETG", "PETG"])
+        self.assertEqual(
+            data["filament_settings_id"],
+            ["Voolt3D PETG Premium - Marrom", "Voolt3D PETG Premium - White"],
+        )
+        self.assertEqual(data["default_filament_colour"], ["#804000", "#FFFFFF"])
+        self.assertEqual(data["filament_ids"], ["P2ea0049", "GFG99"])
+        self.assertEqual(data["nozzle_temperature"], ["235", "235"])
+        self.assertEqual(data["filament_map_mode"], "Auto For Flush")
 
     def test_export_creates_required_3mf_entries(self):
         objects_data = sample_objects_data()
@@ -123,8 +119,8 @@ class ThreeMfExporterTests(unittest.TestCase):
 
         with zipfile.ZipFile(output_path, "r") as archive:
             entries = set(archive.namelist())
-            filament_1 = json.loads(archive.read("Metadata/filament_settings_1.config"))
-            filament_2 = json.loads(archive.read("Metadata/filament_settings_2.config"))
+            project_settings = json.loads(archive.read("Metadata/project_settings.config"))
+            model_settings = archive.read("Metadata/model_settings.config").decode("utf-8")
 
         expected_entries = {
             "[Content_Types].xml",
@@ -133,12 +129,19 @@ class ThreeMfExporterTests(unittest.TestCase):
             "3D/_rels/3dmodel.model.rels",
             "3D/Objects/objects.model",
             "Metadata/model_settings.config",
-            "Metadata/filament_settings_1.config",
-            "Metadata/filament_settings_2.config",
+            "Metadata/project_settings.config",
         }
         self.assertTrue(expected_entries.issubset(entries))
-        self.assertEqual(filament_1["filament_settings_id"], ["Voolt3D PETG Premium - Marrom"])
-        self.assertEqual(filament_2["filament_settings_id"], ["Voolt3D PETG Premium - White"])
+        self.assertNotIn("Metadata/filament_settings_1.config", entries)
+        self.assertNotIn("Metadata/filament_settings_2.config", entries)
+        self.assertEqual(
+            project_settings["filament_settings_id"],
+            ["Voolt3D PETG Premium - Marrom", "Voolt3D PETG Premium - White"],
+        )
+        self.assertIn('<metadata key="name" value="Placa"/>', model_settings)
+        self.assertIn('<metadata key="extruder" value="1"/>', model_settings)
+        self.assertIn('<metadata key="name" value="Texto"/>', model_settings)
+        self.assertIn('<metadata key="extruder" value="2"/>', model_settings)
 
 
 if __name__ == "__main__":

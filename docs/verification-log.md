@@ -9,6 +9,16 @@ Status:
 - `Blocked`: nao foi possivel executar no ambiente atual.
 - `Pending`: ainda nao executado.
 
+## 2026-09-24 - Configuração de projeto Bambu `IMP-005`
+
+| Validacao | Status | Observacao |
+|---|---|---|
+| Testes do exportador | Pass | `tests/test_threemf_exporter.py` valida a presença de `Metadata/project_settings.config`, os dois IDs Voolt e a ausência dos arquivos legados. |
+| Suite automatizada | Pass | `python -X utf8 -m unittest discover -s tests -v`: 17 testes. |
+| Compilação do exportador | Pass | `python -X utf8 -m py_compile src/blender/threemf_exporter.py`. |
+| Geração real no Docker | Pass | Blender gerou `placa_bambu_project_settings_20260924_132000.3mf` com os dois perfis no arquivo de projeto. |
+| Abertura de um arquivo novo no Bambu Studio | Pending | Requer validação do usuário antes de considerar o `IMP-005` verificado. |
+
 ## 2026-09-24 - Fonte principal ate 40 mm `IMP-006`
 
 ### Validacoes executadas
