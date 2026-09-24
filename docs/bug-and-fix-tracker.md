@@ -39,6 +39,7 @@ Severidade:
 | IMP-003 | Medium | Fixed | 3MF/Bambu | Padronizar filamentos, cores e vinculo automatico do texto ao segundo material | Validacao manual | v0.2.0 |
 | IMP-004 | Medium | Verified | Product/Web/Blender | Suportar placa reduzida 200 x 128mm alem da padrao 200 x 180mm | Implementacao urgente | v0.2.0 |
 | IMP-005 | Low | Planned | 3MF/Bambu | Investigar preenchimento automatico dos filamentos no Bambu Studio | Validacao manual | v0.2.x |
+| IMP-006 | Medium | Verified | Web/Blender | Permitir fonte principal de ate 40 mm | Solicitacao urgente do usuario | v0.2.0 |
 
 ## Detalhamento
 

@@ -57,7 +57,7 @@ A placa e gerada proceduralmente como malha solida, com corte obliquo na quina i
 | Fonte | Roboto Bold |
 | Tamanho padrao no gerador | 20mm |
 | Tamanho minimo | 5mm |
-| Slider da UI | 5mm a 20mm |
+| Slider da UI | 5mm a 40mm |
 | Largura util | 160mm |
 | Altura util considerada no gerador | 100mm na placa 180mm; 48mm na placa 128mm |
 | Altura total do texto 3D | 0.7mm |

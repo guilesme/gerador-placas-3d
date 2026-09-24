@@ -9,6 +9,18 @@ Status:
 - `Blocked`: nao foi possivel executar no ambiente atual.
 - `Pending`: ainda nao executado.
 
+## 2026-09-24 - Fonte principal ate 40 mm `IMP-006`
+
+### Validacoes executadas
+
+| Validacao | Status | Observacao |
+|---|---|---|
+| Compilacao dos modulos Python | Pass | `python -m py_compile` dos modulos principais. |
+| Testes automatizados | Pass | `python -m unittest discover -s tests -v`: 18 testes. |
+| Geracao no Docker com fonte 40 mm | Pass | Blender gerou um `.3mf` temporario valido para o texto `FONTE 40`. |
+
+Observacao: tamanhos grandes funcionam melhor para textos curtos. Textos multilinha, principalmente na placa reduzida, exigem validacao visual para garantir que nao ultrapassem a area disponivel.
+
 ## 2026-05-26 - Fixes iniciais `v0.1.1`
 
 Branch: `codex/v0.1.1-stability`

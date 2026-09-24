@@ -19,6 +19,7 @@ O formato segue a ideia de [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ### Changed
 
+- Amplia o limite do seletor de fonte da placa de 20 mm para 40 mm.
 - Atualiza documentacao publica, especificacao e rastreador para a proxima versao `0.2.0-dev`.
 - Registra validacao manual parcial do `IMP-003` e separa investigacao do preenchimento automatico de filamentos em `IMP-005`.
 

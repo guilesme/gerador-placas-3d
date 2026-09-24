@@ -231,7 +231,7 @@ with st.sidebar:
     font_size = st.slider(
         "Tamanho da fonte (mm)",
         min_value=5,
-        max_value=20,
+        max_value=40,
         value=20,
         step=1,
         key="font_size_mm",
