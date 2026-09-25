@@ -1,6 +1,6 @@
 # Especificacao Tecnica - Gerador de Placas 3D
 
-Versão da especificação: `0.2.0`
+Versão da especificação: `1.1.1`
 
 Esta especificacao descreve o comportamento atual validado da aplicacao. Ela substitui a especificacao inicial gerada durante a fase de prototipo.
 

@@ -11,21 +11,21 @@ MAJOR.MINOR.PATCH
 Exemplo:
 
 ```text
-v0.1.0
-v0.1.1
-v0.2.0
-v1.0.0
+v1.1.0
+v1.1.1
+v1.2.0
+v2.0.0
 ```
 
 ## Estrategia Recomendada
 
-### `v0.1.0` - Baseline funcional
+### `v1.1.0` - Baseline funcional
 
 Representa o estado atual da aplicacao: funcional para gerar placas 3D no fluxo conhecido.
 
 Essa versao nao precisa significar "codigo perfeito"; significa "ponto estavel conhecido".
 
-### `v0.1.x` - Correcoes sem mudar o produto
+### `v1.1.x` - Correções sem mudar o produto
 
 Usar para:
 
@@ -38,11 +38,11 @@ Usar para:
 Exemplos:
 
 ```text
-v0.1.1: corrige BLENDER_PATH e progress bar falsa
-v0.1.2: adiciona smoke tests e valida rollback
+v1.1.1: corrige a configuração do Bambu Studio e adiciona o corte espelhado
+v1.1.2: adiciona smoke tests e valida rollback
 ```
 
-### `v0.2.0` - Melhorias de produto
+### `v1.2.0` - Melhorias de produto
 
 Usar para features pequenas e compativeis:
 
@@ -52,7 +52,7 @@ Usar para features pequenas e compativeis:
 - opcoes adicionais de alinhamento;
 - presets de placa.
 
-### `v1.0.0` - Versao publica madura
+### `v2.0.0` - Próxima grande evolução do produto
 
 Usar quando:
 
@@ -95,8 +95,8 @@ Categorias recomendadas:
 Criar tag anotada para cada release:
 
 ```bash
-git tag -a v0.1.1 -m "Release v0.1.1"
-git push origin v0.1.1
+git tag -a v1.1.1 -m "Release v1.1.1"
+git push origin v1.1.1
 ```
 
 Conferir tags:
@@ -108,7 +108,7 @@ git tag --list
 Voltar para uma versao:
 
 ```bash
-git checkout v0.1.0
+git checkout v1.1.0
 ```
 
 ## Releases no GitHub
@@ -125,7 +125,7 @@ Para melhorar visibilidade, cada tag estavel deve virar uma GitHub Release conte
 
 ## Politica de Compatibilidade
 
-Enquanto o projeto estiver em `0.x`, mudancas ainda podem evoluir com alguma liberdade. Mesmo assim, toda mudanca que possa quebrar o uso atual deve:
+Na linha estável `1.x`, mudanças compatíveis incrementam a versão menor ou de correção. Toda mudança que possa quebrar o uso atual deve:
 
 - ser descrita no changelog;
 - ter rollback documentado;

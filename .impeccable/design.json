@@ -1,0 +1,18 @@
+{
+  "direction": "ficha-de-producao",
+  "version": 1,
+  "summary": "Interface clara e contemporânea para configurar uma peça física, com a placa marrom e a gravação branca como referências visuais centrais.",
+  "immutable": [
+    "Materiais marrom e branco da placa",
+    "Fluxo de configuração, geração e download",
+    "Opções de tamanho, corte, alinhamento e tipografia"
+  ],
+  "tokens": {
+    "ink": "#172321",
+    "paper": "#f1f3ef",
+    "line": "#c8d0ca",
+    "wood": "#78401f",
+    "woodDark": "#4f2917",
+    "whiteInk": "#fffdf8"
+  }
+}

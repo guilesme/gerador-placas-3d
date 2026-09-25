@@ -6,7 +6,7 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 
 ## Status
 
-- Versão atual: `0.2.0`
+- Versão atual: `1.1.1`
 - Baseline funcional preservada: `v0.1.0`
 - Branch de feature atual: `codex/imp-001-rodape-configuravel`
 - Testes automatizados iniciais: `unittest`
@@ -112,7 +112,7 @@ v0.1.0
 Proxima versao planejada:
 
 ```text
-v0.2.0
+v1.1.1
 ```
 
 ## Roadmap Curto

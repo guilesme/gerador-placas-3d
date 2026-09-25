@@ -6,11 +6,16 @@ O formato segue a ideia de [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
-## [0.2.0] - 2026-09-25
+## [1.1.1] - 2026-09-25
 
 ### Added
 
 - Adiciona seleção de corte inferior esquerdo espelhado para as placas padrão e reduzida; o rodapé acompanha o lado oposto ao corte.
+
+### Changed
+
+- Redesenha a interface como uma ficha de produção clara e responsiva, preservando o fluxo, os materiais marrom/branco e todos os controles de geração.
+- Passa a exibir a versão da aplicação a partir do arquivo `VERSION`, evitando divergência entre a interface e a release.
 
 ### Fixed
 
@@ -37,7 +42,7 @@ O formato segue a ideia de [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 - Amplia o limite do seletor de fonte da placa de 20 mm para 40 mm.
 - Migra os perfis PETG Voolt para `Metadata/project_settings.config`, formato de projeto atual do Bambu Studio. (`IMP-005`)
-- Atualiza documentacao publica, especificacao e rastreador para a proxima versao `0.2.0-dev`.
+- Atualiza documentacao publica, especificacao e rastreador para a release `v1.1.1`.
 - Registra validacao manual parcial do `IMP-003` e separa investigacao do preenchimento automatico de filamentos em `IMP-005`.
 
 ## [0.1.1] - 2026-05-27

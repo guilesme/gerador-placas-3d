@@ -1,20 +1,23 @@
 """
-Gerador de Placas 3D - Frontend Streamlit v0.2.0
-UI/UX Premium com customização de fonte
+Gerador de Placas 3D - Frontend Streamlit v1.1.1
+Interface de ficha de produção para configuração e geração de placas.
 """
 
 import html
 import os
+from pathlib import Path
 import streamlit as st
 from plate_service import generate_plate
 from validation import validate_text
 
 DEFAULT_CONDO_NAME = os.environ.get("CONDO_NAME", "Condominio Astro")
+VERSION_FILE = Path(__file__).resolve().parents[2] / "VERSION"
+APP_VERSION = VERSION_FILE.read_text(encoding="utf-8").strip() if VERSION_FILE.exists() else "1.1.1"
 
 # Configuração da página
 st.set_page_config(
     page_title="Gerador de Placas 3D",
-    page_icon="🏢",
+    page_icon="◆",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -159,9 +162,9 @@ st.markdown("""
     
     .warning-box {
         background: rgba(241, 196, 15, 0.1);
-        border-left: 4px solid #f1c40f;
+        border: 1px solid #f1c40f;
         padding: 1rem;
-        border-radius: 0 8px 8px 0;
+        border-radius: 8px;
         margin: 0.5rem 0;
     }
     
@@ -211,23 +214,96 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Sistema visual: ficha de produção para uma peça física, não um dashboard genérico.
+st.markdown("""
+<style>
+    :root {
+        --ink: #172321;
+        --muted: #5e6c68;
+        --paper: #f1f3ef;
+        --line: #c8d0ca;
+        --wood: #78401f;
+        --wood-dark: #4f2917;
+        --brass: #af7b38;
+        --white-ink: #fffdf8;
+    }
+    .stApp { background: var(--paper) !important; color: var(--ink) !important; }
+    [data-testid="stHeader"] { background: rgba(241,243,239,.92) !important; }
+    [data-testid="stSidebar"] {
+        background: #e4e9e4 !important;
+        border-right: 1px solid var(--line) !important;
+    }
+    [data-testid="stSidebar"] * { color: var(--ink) !important; }
+    .block-container { max-width: 1280px !important; padding-top: 2.25rem !important; padding-bottom: 3rem !important; }
+    .main-header {
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        border-bottom: 1px solid var(--line);
+        color: var(--ink) !important;
+        display: grid;
+        grid-template-columns: minmax(0,1fr) 184px;
+        gap: 2rem;
+        align-items: end;
+        margin: 0 0 2.25rem 0 !important;
+        padding: 0 0 1.5rem 0 !important;
+        text-align: left !important;
+    }
+    .main-header h1 { color: var(--ink) !important; font-size: clamp(2.1rem, 5vw, 4.25rem) !important; letter-spacing: -.055em; line-height: .92; text-shadow: none !important; }
+    .main-header p { color: var(--muted) !important; max-width: 48ch; margin: .75rem 0 0 !important; }
+    .plate-mark { width: 184px; height: 108px; background: var(--wood); clip-path: polygon(0 0,100% 0,100% 60%,72% 100%,0 100%); position: relative; }
+    .plate-mark::after { content: ""; position: absolute; inset: 12px; border: 1px solid rgba(255,253,248,.58); clip-path: polygon(0 0,100% 0,100% 60%,72% 100%,0 100%); }
+    .card-title { color: var(--ink) !important; font-size: 1.05rem !important; letter-spacing: -.02em; border-bottom: 1px solid var(--line); padding-bottom: .7rem; margin-bottom: .9rem !important; }
+    .stTextArea textarea, .stTextInput input {
+        background: #fbfcfa !important; border: 1px solid #aeb9b2 !important; border-radius: 6px !important;
+        color: var(--ink) !important; box-shadow: none !important;
+    }
+    .stTextArea textarea:focus, .stTextInput input:focus { border-color: var(--wood) !important; box-shadow: 0 0 0 3px rgba(120,64,31,.15) !important; }
+    .stSlider > div > div > div { background: var(--wood) !important; }
+    .stButton > button, .stDownloadButton > button {
+        border-radius: 6px !important; border: 1px solid var(--wood-dark) !important; background: var(--wood) !important;
+        box-shadow: 0 5px 0 var(--wood-dark) !important; color: var(--white-ink) !important; font-weight: 700 !important;
+        transition: transform .16s ease, box-shadow .16s ease !important;
+    }
+    .stButton > button:hover, .stDownloadButton > button:hover { transform: translateY(2px) !important; box-shadow: 0 3px 0 var(--wood-dark) !important; }
+    .stButton > button:focus-visible, .stDownloadButton > button:focus-visible { outline: 3px solid var(--brass) !important; outline-offset: 3px !important; }
+    .preview-box { background: #e8ece8 !important; border: 1px dashed #aeb9b2 !important; border-radius: 6px !important; color: var(--muted) !important; }
+    .production-preview { background: var(--wood); min-height: 280px; padding: 2rem; position: relative; clip-path: polygon(0 0,100% 0,100% 79%,84% 100%,0 100%); box-shadow: 0 12px 28px rgba(23,35,33,.18); }
+    .production-preview::before { content: ""; position: absolute; inset: 12px; border: 1px solid rgba(255,253,248,.34); clip-path: polygon(0 0,100% 0,100% 79%,84% 100%,0 100%); pointer-events: none; }
+    .production-preview .plate-copy { position: relative; color: var(--white-ink); font-weight: 700; line-height: 1.35; }
+    .production-preview .plate-footer { position: absolute; bottom: 25px; left: 32px; color: rgba(255,253,248,.86); font-size: .72rem; }
+    .success-box { background: #e5eee7 !important; border: 1px solid #75927a !important; border-radius: 6px !important; text-align: left !important; }
+    .success-box h3 { color: #245336 !important; }
+    .warning-box { background: #fbf2df !important; border: 1px solid var(--brass) !important; color: var(--ink) !important; }
+    .footer { border-top: 1px solid var(--line); color: var(--muted) !important; margin-top: 4rem; padding: 1.5rem 0 !important; text-align: left !important; }
+    @media (max-width: 760px) {
+        .main-header { grid-template-columns: 1fr; }
+        .plate-mark { width: 132px; height: 76px; }
+        .production-preview { min-height: 230px; }
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # ========== LAYOUT ==========
 
 # Header
 st.markdown(f"""
 <div class="main-header">
-    <h1>🏢 Gerador de Placas 3D</h1>
-    <p>{html.escape(DEFAULT_CONDO_NAME)} • Padrão oficial de sinalização</p>
+    <div>
+        <h1>Gerador de<br>Placas 3D</h1>
+        <p>Prepare uma placa consistente para impressão, do texto ao arquivo 3MF.</p>
+    </div>
+    <div class="plate-mark" aria-hidden="true"></div>
 </div>
 """, unsafe_allow_html=True)
 
 # Sidebar - Configurações
 with st.sidebar:
-    st.markdown("## ⚙️ Configurações")
+    st.markdown("## Configuração")
     st.markdown("---")
     
     # Tamanho da Fonte
-    st.markdown("### 📝 Tamanho do Texto")
+    st.markdown("### Texto")
     font_size = st.slider(
         "Tamanho da fonte (mm)",
         min_value=5,
@@ -241,9 +317,9 @@ with st.sidebar:
     # Preview do tamanho
     size_desc = "Pequeno" if font_size < 15 else "Médio" if font_size < 25 else "Grande"
     st.markdown(f"""
-    <div style="text-align: center; padding: 1rem; background: rgba(230,126,34,0.1); border-radius: 10px;">
-        <div style="font-size: 2rem; color: #e67e22;">{font_size}mm</div>
-        <div style="color: rgba(255,255,255,0.6);">{size_desc}</div>
+    <div style="text-align: center; padding: 1rem; background: #f1e5d9; border: 1px solid #d5b99e; border-radius: 6px;">
+        <div style="font-size: 2rem; color: #78401f;">{font_size} mm</div>
+        <div style="color: #5e6c68;">{size_desc}</div>
     </div>
     """, unsafe_allow_html=True)
     
@@ -275,7 +351,7 @@ with st.sidebar:
     st.markdown("---")
 
     # Lado do corte
-    st.markdown("### ◢ Corte inferior")
+    st.markdown("### Corte inferior")
     cut_side_option = st.radio(
         "Lado do corte",
         options=["Direita", "Esquerda"],
@@ -289,7 +365,7 @@ with st.sidebar:
     st.markdown("---")
     
     # Alinhamento
-    st.markdown("### ↔️ Alinhamento do Texto")
+    st.markdown("### Alinhamento")
     align_option = st.radio(
         "Alinhamento",
         options=["Centro", "Esquerda"],
@@ -309,7 +385,7 @@ with st.sidebar:
     st.markdown("---")
     
     # Especificações
-    st.markdown("### 📐 Especificações")
+    st.markdown("### Especificações")
     st.markdown(f"""
     - **Placa:** 200 x {plate_height} mm
     - **Espessura:** 2 mm
@@ -319,7 +395,7 @@ with st.sidebar:
     """)
     
     st.markdown("---")
-    st.markdown("### 🎨 Cores")
+    st.markdown("### Materiais")
     st.markdown("""
     - **Slot 1:** Placa (Marrom)
     - **Slot 2:** Texto (Branco)
@@ -331,7 +407,7 @@ validation_errors = []
 validation_warnings = []
 
 with col1:
-    st.markdown('<div class="card-title">✏️ Texto da Placa</div>', unsafe_allow_html=True)
+    st.markdown('<div class="card-title">Texto da placa</div>', unsafe_allow_html=True)
     
     text_input = st.text_area(
         "Digite o texto",
@@ -352,10 +428,10 @@ with col1:
         # Info do texto
         lines = len([l for l in text_input.split('\n') if l.strip()])
         chars = len(text_input)
-        st.markdown(f"📊 **{chars}** caracteres • **{lines}** linha(s)")
+        st.markdown(f"**{chars}** caracteres · **{lines}** linha(s)")
 
 with col2:
-    st.markdown('<div class="card-title">📋 Preview</div>', unsafe_allow_html=True)
+    st.markdown('<div class="card-title">Prévia de produção</div>', unsafe_allow_html=True)
     
     if text_input:
         lines = text_input.split('\n')
@@ -369,11 +445,11 @@ with col2:
             content_html = f"<div style='text-align: {align_css};'>{safe_text}</div>"
             
         st.markdown(f"""
-        <div style="background: #8B4513; padding: 1.5rem; border-radius: 12px; min-height: 150px; position: relative;">
-            <div style="color: white; font-size: {min(font_size/2, 14)}px; font-weight: bold; padding-top: 1rem;">
+        <div class="production-preview">
+            <div class="plate-copy" style="font-size: {min(font_size/2, 14)}px; padding-top: 1rem;">
                 {content_html}
             </div>
-            <div style="position: absolute; bottom: 10px; left: 15px; color: white; font-size: 10px;">
+            <div class="plate-footer">
                 {html.escape(footer_text)}
             </div>
         </div>
@@ -381,8 +457,8 @@ with col2:
     else:
         st.markdown("""
         <div class="preview-box">
-            <div style="font-size: 3rem; margin-bottom: 0.5rem;">📝</div>
-            <div>Digite o texto para visualizar</div>
+            <div style="font-size: 1.1rem; margin-bottom: 0.5rem;">Aguardando conteúdo</div>
+            <div>Digite o texto para montar a prévia da placa.</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -393,7 +469,7 @@ col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
 
 with col_btn2:
     generate_btn = st.button(
-        "🚀 Gerar Placa 3D",
+        "Gerar arquivo 3MF",
         disabled=not text_input or not text_input.strip() or bool(validation_errors),
         use_container_width=True
     )
@@ -406,8 +482,8 @@ if generate_btn and text_input.strip():
         if success:
             st.markdown("""
             <div class="success-box">
-                <h3>✅ Placa gerada com sucesso!</h3>
-                <p style="color: rgba(255,255,255,0.7);">Clique no botão abaixo para baixar</p>
+                <h3>Arquivo pronto para impressão</h3>
+                <p>Baixe o arquivo 3MF para abrir no Bambu Studio.</p>
             </div>
             """, unsafe_allow_html=True)
             
@@ -415,16 +491,16 @@ if generate_btn and text_input.strip():
             with col_dl2:
                 with open(filepath, "rb") as f:
                     st.download_button(
-                        label="⬇️ Baixar Arquivo .3mf",
+                        label="Baixar arquivo .3mf",
                         data=f,
                         file_name=filepath.name,
                         mime="application/vnd.ms-package.3dmanufacturing-3dmodel+xml",
                         use_container_width=True
                     )
             
-            with st.expander("📖 Como usar no Bambu Studio"):
+            with st.expander("Como usar no Bambu Studio"):
                 st.markdown("""
-                1. **Importe** o arquivo .3mf no Bambu Studio
+                1. **Abra** o arquivo .3mf no Bambu Studio
                 2. **Configure o AMS:**
                    - Slot 1: Filamento Marrom (placa)
                    - Slot 2: Filamento Branco (texto)
@@ -436,8 +512,8 @@ if generate_btn and text_input.strip():
                 st.code(msg)
 
 # Footer
-st.markdown("""
+st.markdown(f"""
 <div class="footer">
-    <p>🏢 Gerador de Placas 3D v0.2.0</p>
+    <p>Gerador de Placas 3D · v{html.escape(APP_VERSION)}</p>
 </div>
 """, unsafe_allow_html=True)

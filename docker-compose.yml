@@ -7,6 +7,7 @@ services:
       - ./output:/app/output
       - ./assets:/app/assets
       - ./src:/app/src
+      - ./VERSION:/app/VERSION:ro
     environment:
       - BLENDER_PATH=/opt/blender/blender
       - LOG_LEVEL=INFO
