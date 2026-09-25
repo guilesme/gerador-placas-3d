@@ -6,7 +6,7 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 
 ## Status
 
-- Versao em desenvolvimento: `0.2.0-dev`
+- Versão atual: `0.2.0`
 - Baseline funcional preservada: `v0.1.0`
 - Branch de feature atual: `codex/imp-001-rodape-configuravel`
 - Testes automatizados iniciais: `unittest`
@@ -21,6 +21,7 @@ O projeto nasceu para automatizar placas do Condominio Astro, mas esta sendo org
 - Texto principal com suporte a multiplas linhas.
 - Ajuste de tamanho de fonte e alinhamento.
 - Selecao entre placa padrao `200 x 180 mm` e reduzida `200 x 128 mm`.
+- Selecao do corte inferior direito (padrao) ou esquerdo espelhado, nos dois tamanhos.
 - Rodape configuravel da placa.
 - Area de output da aplicacao para download do arquivo gerado.
 

@@ -1,5 +1,15 @@
 # Log de Verificacao
 
+## 2026-09-25 - Corte esquerdo e configuração de projeto Bambu
+
+| Verificação | Resultado | Evidência |
+|---|---|---|
+| Testes automatizados | Pass | 22 testes passaram, incluindo geometria espelhada, passagem do parâmetro e estrutura da configuração Bambu. |
+| Geração real: corte esquerdo padrão | Pass | Blender no Docker gerou uma placa de 200 x 180 mm; a base confirmou o corte de 42,48 mm no canto inferior esquerdo. |
+| Geração real: corte esquerdo reduzida | Pass | Blender no Docker gerou uma placa de 200 x 128 mm com a mesma proporção de corte. |
+| Estrutura de projeto Bambu | Pass estrutural | O arquivo exportado usa o preset-base nativo e quatro grupos de configurações, conforme um projeto válido de referência. |
+| Abertura no Bambu Studio | Pending | Requer abrir uma placa nova no Bambu Studio e confirmar que não há alerta e que os dois filamentos são reconhecidos. |
+
 Este arquivo registra validacoes executadas durante o desenvolvimento.
 
 Status:

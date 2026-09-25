@@ -1,6 +1,6 @@
 # Especificacao Tecnica - Gerador de Placas 3D
 
-Versao da especificacao: `0.2.0-dev`
+Versão da especificação: `0.2.0`
 
 Esta especificacao descreve o comportamento atual validado da aplicacao. Ela substitui a especificacao inicial gerada durante a fase de prototipo.
 
@@ -46,9 +46,9 @@ Regras atuais:
 | Largura | 200mm |
 | Altura | 180mm ou 128mm |
 | Espessura | 2mm |
-| Chanfro inferior direito | 42.48mm |
+| Chanfro inferior | 42.48mm |
 
-A placa e gerada proceduralmente como malha solida, com corte obliquo na quina inferior direita.
+A placa é gerada proceduralmente como malha sólida, com corte oblíquo de 42,48 mm na quina inferior direita (padrão) ou esquerda (placa traseira espelhada). Ambos os lados estão disponíveis para os tamanhos padrão e reduzido. O rodapé acompanha o lado oposto ao corte.
 
 ## 4. Texto Principal
 

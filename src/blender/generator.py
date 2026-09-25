@@ -10,6 +10,12 @@ import sys
 from pathlib import Path
 from mathutils import Vector
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from plate_geometry import normalize_cut_side, plate_outline_points
+
 # --- CONSTANTES ---
 PLATE_WIDTH = 200.0
 DEFAULT_PLATE_HEIGHT = 180.0
@@ -99,28 +105,14 @@ def get_font():
     return None
 
 
-def create_plate(plate_height=DEFAULT_PLATE_HEIGHT):
-    """Cria placa base como mesh sólido com chanfro"""
-    log(f"Criando placa {PLATE_WIDTH}x{plate_height}x{PLATE_DEPTH}mm")
-    
-    half_w = PLATE_WIDTH / 2
-    half_h = plate_height / 2
-    
-    # Vértices do pentágono (base e topo)
-    verts = [
-        # Base (Z=0)
-        Vector((-half_w, half_h, 0)),           # 0 TL
-        Vector((half_w, half_h, 0)),            # 1 TR
-        Vector((half_w, -half_h + CORNER_CUT, 0)),  # 2 BR início chanfro
-        Vector((half_w - CORNER_CUT, -half_h, 0)),  # 3 BR fim chanfro
-        Vector((-half_w, -half_h, 0)),          # 4 BL
-        # Topo (Z=PLATE_DEPTH)
-        Vector((-half_w, half_h, PLATE_DEPTH)),
-        Vector((half_w, half_h, PLATE_DEPTH)),
-        Vector((half_w, -half_h + CORNER_CUT, PLATE_DEPTH)),
-        Vector((half_w - CORNER_CUT, -half_h, PLATE_DEPTH)),
-        Vector((-half_w, -half_h, PLATE_DEPTH)),
-    ]
+def create_plate(plate_height=DEFAULT_PLATE_HEIGHT, cut_side="RIGHT"):
+    """Cria placa base como mesh sólido com chanfro inferior selecionável."""
+    cut_side = normalize_cut_side(cut_side)
+    log(f"Criando placa {PLATE_WIDTH}x{plate_height}x{PLATE_DEPTH}mm; corte {cut_side}")
+
+    outline = plate_outline_points(plate_height, cut_side)
+    verts = [Vector((x, y, 0)) for x, y in outline]
+    verts.extend(Vector((x, y, PLATE_DEPTH)) for x, y in outline)
     
     # Faces (ordem anti-horária para normais externas)
     faces = [
@@ -262,10 +254,11 @@ def calculate_font_size(text, font, plate_height=DEFAULT_PLATE_HEIGHT):
     return size, best_text
 
 
-def generate_plate(text, output_path, custom_font_size=None, align='CENTER', plate_height=DEFAULT_PLATE_HEIGHT, footer_text=DEFAULT_FOOTER_TEXT):
+def generate_plate(text, output_path, custom_font_size=None, align='CENTER', plate_height=DEFAULT_PLATE_HEIGHT, footer_text=DEFAULT_FOOTER_TEXT, cut_side="RIGHT"):
     """Função principal de geração"""
     plate_height = normalize_plate_height(plate_height)
     footer_text = normalize_footer_text(footer_text)
+    cut_side = normalize_cut_side(cut_side)
     log("=" * 50)
     log("INICIANDO GERAÇÃO DE PLACA")
     log("=" * 50)
@@ -274,11 +267,12 @@ def generate_plate(text, output_path, custom_font_size=None, align='CENTER', pla
     log(f"Fonte customizada: {custom_font_size}")
     log(f"Altura da placa: {plate_height}mm")
     log(f"Rodape: {footer_text}")
+    log(f"Corte: {cut_side}")
     
     clear_scene()
     
     # 1. Criar placa base
-    plate = create_plate(plate_height)
+    plate = create_plate(plate_height, cut_side)
     
     # 2. Determinar tamanho de fonte e quebrar o texto
     font = get_font()
@@ -312,10 +306,14 @@ def generate_plate(text, output_path, custom_font_size=None, align='CENTER', pla
     
     # 4. Criar rodapé
     footer_x = -PLATE_WIDTH/2 + FOOTER_MARGIN_X
+    footer_align = 'LEFT'
+    if cut_side == 'LEFT':
+        footer_x = PLATE_WIDTH/2 - FOOTER_MARGIN_X
+        footer_align = 'RIGHT'
     footer_y = -plate_height/2 + FOOTER_MARGIN_Y
     footer = create_solid_text(footer_text, FOOTER_FONT_SIZE, 
                                (footer_x, footer_y), 
-                               align='LEFT', name="Rodape")
+                               align=footer_align, name="Rodape")
     text_objects.append(footer)
     
     # 5. Juntar todos os textos
@@ -381,7 +379,7 @@ def main():
         argv = argv[argv.index('--') + 1:]
     
     if len(argv) < 1:
-        print("Uso: blender --background --python generator.py -- 'TEXTO' output.3mf [font_size] [align] [plate_height] [footer_text]")
+        print("Uso: blender --background --python generator.py -- 'TEXTO' output.3mf [font_size] [align] [plate_height] [footer_text] [cut_side]")
         sys.exit(1)
     
     text = argv[0]
@@ -408,9 +406,13 @@ def main():
     footer_text = DEFAULT_FOOTER_TEXT
     if len(argv) > 5:
         footer_text = normalize_footer_text(argv[5])
+
+    cut_side = 'RIGHT'
+    if len(argv) > 6:
+        cut_side = normalize_cut_side(argv[6])
     
     try:
-        result = generate_plate(text, output, custom_font_size, align, plate_height, footer_text)
+        result = generate_plate(text, output, custom_font_size, align, plate_height, footer_text, cut_side)
         sys.exit(0 if result else 1)
     except Exception as e:
         import traceback

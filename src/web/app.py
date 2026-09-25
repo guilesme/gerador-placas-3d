@@ -1,5 +1,5 @@
 """
-Gerador de Placas 3D - Frontend Streamlit v1.1
+Gerador de Placas 3D - Frontend Streamlit v0.2.0
 UI/UX Premium com customização de fonte
 """
 
@@ -273,6 +273,20 @@ with st.sidebar:
     plate_height = 128 if plate_size_option.startswith("Reduzida") else 180
 
     st.markdown("---")
+
+    # Lado do corte
+    st.markdown("### ◢ Corte inferior")
+    cut_side_option = st.radio(
+        "Lado do corte",
+        options=["Direita", "Esquerda"],
+        index=0,
+        horizontal=True,
+        key="cut_side_option",
+        help="Use esquerda para a placa de trás, espelhada em relação ao padrão.",
+    )
+    cut_side = "LEFT" if cut_side_option == "Esquerda" else "RIGHT"
+
+    st.markdown("---")
     
     # Alinhamento
     st.markdown("### ↔️ Alinhamento do Texto")
@@ -301,6 +315,7 @@ with st.sidebar:
     - **Espessura:** 2 mm
     - **Relevo:** 0.7 mm
     - **Rodapé:** 8 mm
+    - **Corte inferior:** {cut_side_option.lower()}
     """)
     
     st.markdown("---")
@@ -386,7 +401,7 @@ with col_btn2:
 # Processamento
 if generate_btn and text_input.strip():
     with st.spinner("⏳ Gerando modelo 3D... Aguarde, isso pode levar ate 2 minutos."):
-        success, filepath, msg = generate_plate(text_input.strip(), font_size, text_align, plate_height, footer_text)
+        success, filepath, msg = generate_plate(text_input.strip(), font_size, text_align, plate_height, footer_text, cut_side)
         
         if success:
             st.markdown("""
@@ -423,6 +438,6 @@ if generate_btn and text_input.strip():
 # Footer
 st.markdown("""
 <div class="footer">
-    <p>🏢 Gerador de Placas 3D v1.1</p>
+    <p>🏢 Gerador de Placas 3D v0.2.0</p>
 </div>
 """, unsafe_allow_html=True)

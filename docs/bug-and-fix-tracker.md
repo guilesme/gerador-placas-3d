@@ -40,6 +40,7 @@ Severidade:
 | IMP-004 | Medium | Verified | Product/Web/Blender | Suportar placa reduzida 200 x 128mm alem da padrao 200 x 180mm | Implementacao urgente | v0.2.0 |
 | IMP-005 | Low | In progress | 3MF/Bambu | Migrar os perfis para `project_settings.config` e validar abertura no Bambu Studio | Validação manual | v0.2.x |
 | IMP-006 | Medium | Verified | Web/Blender | Permitir fonte principal de ate 40 mm | Solicitacao urgente do usuario | v0.2.0 |
+| IMP-007 | Medium | Verified | Web/Blender | Permitir corte inferior esquerdo espelhado para a placa traseira | Geração real no Docker + testes automatizados | v0.2.0 |
 
 ## Detalhamento
 

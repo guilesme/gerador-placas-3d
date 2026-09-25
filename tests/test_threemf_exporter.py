@@ -95,6 +95,13 @@ class ThreeMfExporterTests(unittest.TestCase):
         self.assertEqual(data["nozzle_temperature"], ["235", "235"])
         self.assertEqual(data["filament_map_mode"], "Auto For Flush")
 
+    def test_project_settings_match_the_verified_bambu_preset_shape(self):
+        data = json.loads(threemf_exporter.build_project_settings())
+
+        self.assertEqual(data["default_filament_profile"], ["Bambu PLA Basic @BBL A1"])
+        self.assertEqual(len(data["different_settings_to_system"]), 4)
+        self.assertEqual(data["different_settings_to_system"][-1], "")
+
     def test_export_creates_required_3mf_entries(self):
         objects_data = sample_objects_data()
         mock_objects = [

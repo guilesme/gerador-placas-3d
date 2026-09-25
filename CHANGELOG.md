@@ -6,6 +6,22 @@ O formato segue a ideia de [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-25
+
+### Added
+
+- Adiciona seleção de corte inferior esquerdo espelhado para as placas padrão e reduzida; o rodapé acompanha o lado oposto ao corte.
+
+### Fixed
+
+- Usa um preset-base nativo ao exportar configurações de projeto do Bambu Studio, preservando os PETGs Voolt como configurações de filamento.
+
+### Tests
+
+- Valida a geometria espelhada do corte e a passagem da opção pela interface e pelo Blender.
+- Valida a estrutura dos presets de projeto exportados para o Bambu Studio.
+- Gera e inspeciona, no Blender do Docker, placas padrão e reduzida com corte esquerdo.
+
 ### Docs
 
 - Adiciona documentacao de governanca, versionamento, testes, roadmap e release.

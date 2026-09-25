@@ -257,7 +257,9 @@ def build_project_settings():
         "curr_bed_type": "Cool Plate",
         "default_print_profile": "0.20mm Standard @BBL A1",
         "print_settings_id": "0.12mm - PETG Placas",
-        "default_filament_profile": values("name"),
+        # O preset-base precisa existir no Bambu Studio; os dois PETGs
+        # personalizados são declarados pelos campos ``filament_*`` abaixo.
+        "default_filament_profile": ["Bambu PLA Basic @BBL A1"],
         "default_filament_colour": values("color"),
         "filament_colour": values("color"),
         "filament_ids": values("filament_id"),
@@ -286,13 +288,14 @@ def build_project_settings():
         "flush_volumes_matrix": ["0", "596", "243", "0"],
         "flush_volumes_vector": ["140", "140", "140", "140"],
         "enable_prime_tower": "1",
+        # O Bambu Studio serializa uma entrada para a impressora, uma para
+        # cada filamento e uma reserva. Manter essa forma evita que ele tente
+        # interpretar uma lista de chaves como presets independentes.
         "different_settings_to_system": [
-            "filament_colour",
-            "filament_ids",
-            "filament_settings_id",
-            "filament_vendor",
-            "filament_type",
-            "nozzle_temperature",
+            "bottom_shell_layers;initial_layer_speed;inner_wall_speed;outer_wall_speed;overhang_1_4_speed;overhang_2_4_speed;overhang_3_4_speed;overhang_4_4_speed;overhang_totally_speed;prime_tower_infill_gap;prime_tower_rib_wall;top_shell_layers;top_solid_infill_flow_ratio;top_surface_pattern;top_surface_speed",
+            "default_filament_colour;filament_deretraction_speed;filament_flow_ratio;filament_max_volumetric_speed;filament_retract_before_wipe;filament_retract_when_changing_layer;filament_retraction_minimum_travel;filament_retraction_speed;filament_wipe;filament_wipe_distance;filament_z_hop;filament_z_hop_types;nozzle_temperature;nozzle_temperature_initial_layer;nozzle_temperature_range_high;temperature_vitrification;textured_plate_temp",
+            "cool_plate_temp;cool_plate_temp_initial_layer;default_filament_colour;filament_cost;filament_deretraction_speed;filament_flow_ratio;filament_max_volumetric_speed;filament_retract_before_wipe;filament_retraction_length;filament_retraction_minimum_travel;filament_retraction_speed;filament_wipe;filament_wipe_distance;filament_z_hop;nozzle_temperature;nozzle_temperature_initial_layer;nozzle_temperature_range_high;nozzle_temperature_range_low;supertack_plate_temp;supertack_plate_temp_initial_layer;temperature_vitrification;textured_plate_temp",
+            "",
         ],
     }, indent=4)
 
